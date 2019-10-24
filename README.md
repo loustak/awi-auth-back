@@ -1,7 +1,7 @@
 # AWI Auth
 The autentication part of the AWI project.
 
-## Instalattion
+## Setup
 You need Node.js (version >= 10) & npm. Once installed simply run `npm install` followed by `npm start` and you should be running.
 The `npm start-watch` command also start [nodemon](https://nodemon.io/). Nodemon monitor your changes and so, it reload your files when you changes them.
 
