@@ -1,0 +1,29 @@
+{
+  "name": "auth",
+  "version": "1.0.0",
+  "description": "The authentication part of the AWI project.",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/index.js",
+    "style": "standard",
+    "style-fix": "standard --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loustak/awi-auth.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/loustak/awi-auth/issues"
+  },
+  "homepage": "https://github.com/loustak/awi-auth#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4",
+    "standard": "^14.3.1"
+  }
+}
