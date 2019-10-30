@@ -18,9 +18,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/loustak/awi-auth/issues"
+    "url": "https://github.com/loustak/awi-auth-back/issues"
   },
-  "homepage": "https://github.com/loustak/awi-auth#readme",
+  "homepage": "https://github.com/loustak/awi-auth-back#readme",
   "dependencies": {
     "express": "^4.17.1"
   },
