@@ -22,7 +22,6 @@
   },
   "homepage": "https://github.com/loustak/awi-auth-back#readme",
   "dependencies": {
-    "axios": "^0.19.0",
     "express": "^4.17.1"
   },
   "devDependencies": {
