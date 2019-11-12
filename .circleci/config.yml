@@ -4,18 +4,18 @@ workflows:
   version: 2
   run_test:
     jobs:
-      - style
-        filters:
-          branches:
-            only:
-              - dev
-              - master
+      - style:
+          filters:
+            branches:
+              only:
+                - dev
+                - master
       - test
-        filters:
-          branches:
-            only:
-              - dev
-              - master
+          filters:
+            branches:
+              only:
+                - dev
+                - master
 
 jobs:
   style:
