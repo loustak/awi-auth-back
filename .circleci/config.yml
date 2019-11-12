@@ -9,11 +9,13 @@ workflows:
             branches:
               only:
                 - dev
+                - master
       - test:
           filters:
             branches:
               only:
                 - dev
+                - master
 
 jobs:
   style:
