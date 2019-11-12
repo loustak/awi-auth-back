@@ -1,6 +1,6 @@
 # Implementation reference of the oAuth2 protocol
 
-![](https://github.com/loustak/awi-auth-back/blob/lucas-doc/docs/oatuh-sequence-diagram.png?raw=true)
+![](https://github.com/loustak/awi-auth-back/blob/master/docs/oatuh-sequence-diagram.png?raw=true)
 
 **To better understand the protocol [check the microsoft documentation](https://docs.microsoft.com/fr-fr/azure/active-directory/develop/v1-protocols-oauth-code).**
 
