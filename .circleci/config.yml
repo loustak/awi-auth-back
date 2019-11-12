@@ -10,7 +10,7 @@ workflows:
               only:
                 - dev
                 - master
-      - test
+      - test:
           filters:
             branches:
               only:
