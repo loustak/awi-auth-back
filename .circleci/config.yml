@@ -5,15 +5,15 @@ workflows:
   run_test:
     jobs:
       - style:
-        filters:
-          branches:
-            only:
-              - dev
+          filters:
+            branches:
+              only:
+                - dev
       - test:
-        filters:
-          branches:
-            only:
-              - dev
+          filters:
+            branches:
+              only:
+                - dev
 
 jobs:
   style:
