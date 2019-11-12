@@ -4,6 +4,7 @@ const app = express()
 app.get('/', (req, res) => {
   res.status(200).send('Homepage of the AWI auth api.')
 })
+
 app.post('/oAuth2/token', (req, res) => {
   //  post the token
 })
