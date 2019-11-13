@@ -10,15 +10,18 @@ describe('Test oauth2 routes', () => {
       test('It should return a 400 code if any of the required arguments are missing', async () => {
         const res = await request(app)
           .get(route)
-
-        expect(res.statusCode).toBe(400)
+          .expect(400)
       })
 
       test('It should redirect the user if no required argument is missing', async () => {
         const res = await request(app)
-          .get(route + '?client_id=myid&redirect_uri=myuri&state=1234')
-
-        expect(res.statusCode).toBe(302)
+          .get(route)
+          .query({
+            client_id: 'myid',
+            redirect_uri: 'myuri',
+            state: '1234'
+          })
+          .expect(302)
       })
     })
   })
@@ -28,26 +31,29 @@ describe('Test oauth2 routes', () => {
 
     const route = '/oauth2/auth'
 
+    const validRedirectUri = 'validUri'
+    const validUsername = 'validUsername'
+    const validPassword = 'validPassword'
+
     const validAuthRequest = () => {
       return request(app)
         .post(route)
-        .set('redirect_uri=valid_uri')
-        .set('username=valid_username')
-        .set('password=valid_password')
+        .field('redirect_uri', validRedirectUri)
+        .field('username', validUsername)
+        .field('password', validPassword)
     }
 
     describe('Test arguments', () => {
       test('It should return a 400 code if all the required arguments are missing', async () => {
         const res = await request(app)
           .post(route)
-
-        expect(res.statusCode).toBe(400)
+          .expect(400)
       })
 
       test('It should redirect to the redirect_uri page and return a 302 code', async () => {
         const res = await validAuthRequest()
-
-        expect(res.statusCode).toBe(302)
+          .expect(302)
+          .expect('Location', new RegExp(validRedirectUri, 'g'))
       })
     })
   })
