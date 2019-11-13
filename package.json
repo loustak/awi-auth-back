@@ -30,6 +30,7 @@
     "ldapjs": "^1.0.2",
     "ldapjs-client": "^0.1.1",
     "oauth2orize": "^1.11.0",
+    "pg": "^7.12.1",
     "validator": "^12.0.0"
   },
   "devDependencies": {

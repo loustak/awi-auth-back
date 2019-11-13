@@ -1,10 +1,30 @@
 const express = require('express')
 const router = express.Router()
 const uid = require('./utils/utilities')
-const validateLoginInput = require('../validation/login')
+const databaseHandler =require('../database/databaseHandler')
 
 router.post('/token', (req, res) => {
-  // Check both in database
+  // get query 
+  const client_id=req.query.client_id
+  const code=req.query.code
+  const contentType= req.query.content-Type
+  if (!client_id || !code || !contentType ||contentType!= "application/x-www-form-urlencoded"){
+    res.status(400).json({error:"Bad request"})
+  }
+  else if(!databaseHandler.existsCode(code,client_id)){
+
+  res.status.json({error:"Parameter not found"})
+
+  }
+  else {
+    const token = uid(40)
+    const refreshToken= uid(40)
+    databaseHandler.setToken(client_id,token,refreshToken)
+    res.json({
+      "token":token,
+      "refreshToken":refreshToken,
+    })
+  }
 })
 
 router.get('/authorize', (req, res) => {
@@ -12,35 +32,41 @@ router.get('/authorize', (req, res) => {
   const redirect_uri = req.query.redirect_uri
   const state = req.query.state
   if (!client_id || !redirect_uri || !state) {
-    res.status(400).json({ err: 'Missing Parameters' })
-  } else {
-    /// checkclient in database
-    // insert in database
-    const redirectUri = 'token?' + `authorization_code=${codeAuth}` + `state=${state}`
+    res.status(400).json({ error: 'Missing Parameters' })
+  }
+   else if (!databaseHandler.existsClient(client_id)){
+    res.json({error:'Client not found'})
+  }
+  {
+    const codeAuth = uid(20)
+    databaseHandler.setCode(client_id,code)
+    const redirectUri = redirect_uri + `/?authorization_code=${codeAuth}` + `state=${state}`
+    res.res.json({ code: codeAuth, state: state })
     res.redirect(redirectUri)
-    res.render.json({ code: codeAuth, state: state })
   }
 })
 
 router.post('/refresh', (req, res) => {
+  const client_id=req.query.client_id
+  const refreshToken=req.query.token
+  if(!client_id || !refreshToken){
+    res.status(400).json({error: "Bad request"})
 
-  //  get token request
+  }//check in database
+  else if (!databaseHandler.existsToken(client_id,token)){
+    res.json({error:"Parameter not found"})
+  }
+  else {
+    const refToken = uid(40)
+    const token = uid(40)
+    databaseHandler.setToken(client_id,token,refToken)
+    res.json({
+      "Token":token,
+      "RefreshToken":refToken
+    })
+
+  }
 })
 
-router.post('/auth', (req, res) => {
-  const { errors, isValid } = validateLoginInput(req.body)
-
-  // Check validation
-  if (!isValid) {
-    return res.status(400).json(errors)
-  }
-
-  if (!username || !password) {
-
-  } else {
-    const codeAuth = uid(20)
-    // send
-  }
-})
 
 module.exports = router
