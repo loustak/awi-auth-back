@@ -4,17 +4,17 @@
  * @return {String}
  * @api private
  */
-module.exports=function uid (len) {
+module.exports = function uid (len) {
   var buf = []
-    , chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-    , charlen = chars.length;
+  var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  var charlen = chars.length
 
   for (var i = 0; i < len; ++i) {
-    buf.push(chars[getRandomInt(0, charlen - 1)]);
+    buf.push(chars[getRandomInt(0, charlen - 1)])
   }
 
-  return buf.join('');
-};
+  return buf.join('')
+}
 
 /**
  * Return a random int, used by `utils.uid()`
@@ -25,6 +25,6 @@ module.exports=function uid (len) {
  * @api private
  */
 
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function getRandomInt (min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }
