@@ -1,5 +1,12 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
+
+if (process.env.NODE_ENV === 'prod') {
+  app.use(morgan('combined'))
+} else if (process.env.NODE_ENV === 'dev') {
+  app.use(morgan('dev'))
+}
 
 app.get('/', (req, res) => {
   res.status(200).send('Homepage of the AWI auth api.')
