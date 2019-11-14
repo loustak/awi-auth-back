@@ -4,9 +4,8 @@
   "description": "The backend authentication part of the AWI project.",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=dev node src/index.js",
-    "start-watch": "NODE_ENV=dev nodemon src/index.js",
-    "start-prod": "NODE_ENV=prod node src/index.js",
+    "start": "node src/index.js",
+    "start-watch": "nodemon src/index.js",
     "style": "standard",
     "style-fix": "standard --fix",
     "test": "NODE_ENV=test jest",
