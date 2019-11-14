@@ -36,7 +36,6 @@ exports.generateToken = async (clientId, authorizationCode) => {
 }
 
 exports.refreshToken = async (clientId, refreshToken) => {
-
   return {
     accessToken: '',
     refreshToken: ''

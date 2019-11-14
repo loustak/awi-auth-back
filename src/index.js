@@ -7,10 +7,10 @@ if (!process.env.APP_ENV) {
 console.log(`Auth server started in ${process.env.APP_ENV}`)
 
 require('./db').connect()
-  .then( () => {
+  .then(() => {
     console.log('Connected to the database')
   })
-  .catch( (err) => {
+  .catch((err) => {
     console.error(`Error when connecting to database: ${err}`)
     process.exit(-1)
   })
