@@ -2,12 +2,13 @@ const express = require('express')
 const app = express()
 const morgan = require('morgan')
 
+const { inProd, inDev } = require('./util')
 const auth = require('./routeAuth')
 
 // Setup correct logger
-if (process.env.NODE_ENV === 'prod') {
+if (inProd()) {
   app.use(morgan('combined'))
-} else if (process.env.NODE_ENV === 'dev') {
+} else if (inDev()) {
   app.use(morgan('dev'))
 }
 
