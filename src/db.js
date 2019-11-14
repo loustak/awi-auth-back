@@ -5,7 +5,7 @@ let pool = null
 
 if (inProd()) {
   pool = new Pool({
-    connectionString: process.env.DATABSE_URL
+    connectionString: process.env.DATABASE_URL
   })
 } else {
   pool = new Pool({
