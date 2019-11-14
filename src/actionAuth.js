@@ -1,3 +1,5 @@
+const db = require('./db')
+
 exports.clientIdExists = async (clientId) => {
   // Return true if the clientId exists in the database,
   // else return false.
