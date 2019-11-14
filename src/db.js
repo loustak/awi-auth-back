@@ -1,9 +1,9 @@
 const Pool = require('pg').Pool
-const { inProd } = require('./util')
+const { inProd, inIntegration } = require('./util')
 
 let pool = null
 
-if (inProd()) {
+if (inProd() || inIntegration()) {
   pool = new Pool({
     connectionString: process.env.DATABASE_URL
   })

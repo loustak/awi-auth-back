@@ -2,13 +2,13 @@ const express = require('express')
 const app = express()
 const morgan = require('morgan')
 
-const { inProd, inDev } = require('./util')
+const { inProd, inTest } = require('./util')
 const auth = require('./routeAuth')
 
 // Setup correct logger
 if (inProd()) {
   app.use(morgan('combined'))
-} else if (inDev()) {
+} else if (!inTest()) {
   app.use(morgan('dev'))
 }
 

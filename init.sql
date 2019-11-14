@@ -3,13 +3,13 @@ CREATE TABLE client (
    client_name    VARCHAR(1000)
 );
 
-CREATE TABLE code (
-   value_code   VARCHAR(1000)       PRIMARY KEY,
+CREATE TABLE authorizaton_code (
+   authorizaton_code   VARCHAR(1000)       PRIMARY KEY,
    client_id    NUMERIC NOT NULL
 );
 
 CREATE TABLE token (
-   value_token   VARCHAR(1000)       PRIMARY KEY,
+   access_token   VARCHAR(1000)       PRIMARY KEY,
    refresh_token   VARCHAR(1000)                ,
    client_id    NUMERIC NOT NULL
 );

@@ -1,12 +1,16 @@
 
 exports.inProd = () => {
-  return process.env.NODE_ENV === 'production'
+  return process.env.APP_ENV === 'prod'
 }
 
-exports.inDev = () => {
-  return process.env.NODE_ENV === 'dev'
+exports.inLocalDev = () => {
+  return process.env.APP_ENV === 'dev'
+}
+
+exports.inIntegration = () => {
+  return process.env.APP_ENV === 'int'
 }
 
 exports.inTest = () => {
-  return process.env.NODE_ENV === 'test'
+  return process.env.APP_ENV === 'test'
 }
