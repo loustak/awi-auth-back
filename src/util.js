@@ -1,6 +1,6 @@
 
 exports.inProd = () => {
-  return process.env.NODE_ENV === 'prod'
+  return process.env.NODE_ENV === 'production'
 }
 
 exports.inDev = () => {
