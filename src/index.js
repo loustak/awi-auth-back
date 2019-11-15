@@ -22,6 +22,6 @@ app.listen(port, () => {
 })
 
 // CHANGE
-require('./actionAuth').auth('test', 'test')
-  .then( () => console.log('Connected to LDAP'))
-  .catch((err) => console.error(err))
+// require('./actionAuth').auth('test', 'test')
+//   .then( () => console.log('Connected to LDAP'))
+//   .catch((err) => console.error(err))
