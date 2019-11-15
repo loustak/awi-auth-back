@@ -1,5 +1,5 @@
 
-exports.inProd = () => {
+exports.inProduction = () => {
   return process.env.APP_ENV === 'prod'
 }
 

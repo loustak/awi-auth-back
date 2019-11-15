@@ -3,11 +3,11 @@ const app = express()
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 
-const { inProd, inTest } = require('./util')
+const { inProduction, inTest } = require('./util')
 const auth = require('./routeAuth')
 
 // Setup correct logger
-if (inProd()) {
+if (inProduction()) {
   app.use(morgan('combined'))
 } else if (!inTest()) {
   app.use(morgan('dev'))

@@ -1,10 +1,7 @@
-const ldap = require('ldapjs')
-var uuid = require('uuid')
+const uuid = require('uuid')
 
+const { createLDAPClient } = require('./ldap')
 const db = require('./db')
-
-const ldapHost = 'ldap://162.38.114.8'
-const ldapPort = 389
 
 exports.clientIdExists = async (clientId) => {
   // Return true if the clientId exists in the database,
@@ -29,21 +26,17 @@ exports.auth = async (username, password) => {
         return resolve(false)
       }
 
-    const client = ldap.createClient({
-      url: `${ldapHost}:${ldapPort}`
-    })
+    const client = createLDAPClient()
 
     client.on('error', (err) => {
-      if (err.errno === 'ENOTFOUND' &&
-        err.syscall === 'getaddrinfo') {
-          console.error('This error may happen when you are not on the same' + 
-            ' network as the Polytech LDAP, you can use a VPN to fix this')
-      }
-
       return reject(err)
     })
 
-    client.bind(username + '@isim.intra', password, (err) => {
+    client.on('connectTimeout', (err) => {
+      return reject(err)
+    })
+
+    client.bind(username + '@isim.intra', password, async (err) => {
       if (err) {
         return reject(err)
       }
@@ -54,8 +47,10 @@ exports.auth = async (username, password) => {
         VALUES ($1, $2)
       `
 
-      db.query(sql, [authorizationCode, username])
-      resolve(authorizationCode)
+      await db.query(sql, [authorizationCode, username])
+        .catch(ex => reject(ex))
+
+      return resolve(authorizationCode)
     })
   })
 }
