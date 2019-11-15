@@ -44,7 +44,7 @@ if (inLocalDev()) {
 
 logger.stream = {
   write: (message, encoding) => {
-    logger.debug(message)
+    logger.debug(message.trim())
   }
 }
 
