@@ -3,7 +3,7 @@ var uuid = require('uuid')
 
 const db = require('./db')
 
-const ldapHost = 'ldap://srvdc.isim.intra'
+const ldapHost = 'ldap://srvdc.polytech.umontpellier.fr'
 const ldapPort = 389
 
 exports.clientIdExists = async (clientId) => {
@@ -37,7 +37,7 @@ exports.auth = async (username, password) => {
       if (err.errno === 'ENOTFOUND' &&
         err.syscall === 'getaddrinfo') {
           console.error('This error may happen when you are not on the same' + 
-            'network as the Polytech LDAP, you can use a VPN to fix this')
+            ' network as the Polytech LDAP, you can use a VPN to fix this')
       }
 
       return reject(err)
