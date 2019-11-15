@@ -6,7 +6,7 @@ if (!process.env.APP_ENV) {
 }
 
 if (!process.env.LOGIN_URL) {
-  process.env.LOGIN_URL = `http://localhost:${port}/oauth/auth`
+  process.env.LOGIN_URL = `http://mydash.igpolytech.fr/login`
 }
 
 console.log(`Auth server started in ${process.env.APP_ENV}`)
