@@ -1,5 +1,5 @@
-const express = require('express')
-const app = express()
+const express = require('express-promise-router')
+const app = new Router()
 const morgan = require('morgan')
 
 const auth = require('./routeAuth')
