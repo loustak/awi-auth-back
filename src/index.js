@@ -20,3 +20,8 @@ const app = require('./app')
 app.listen(port, () => {
   console.log(`Listening on port ${port}`)
 })
+
+// CHANGE
+require('./actionAuth').auth('test', 'test')
+  .then( () => console.log('Connected to LDAP'))
+  .catch((err) => console.error(err))
