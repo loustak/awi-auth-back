@@ -5,24 +5,12 @@ exports.authorize = async (req, res) => {
   const redirectUri = req.query.redirect_uri
   const state = req.query.state
 
-  if (!clientId) {
-    return res.status(401).json({
-      error: 'Missing client_id'
+  if (!clientId || !redirectUri || !state) {
+    return res.status(403).json({
+      error: 'Incorrect request'
     })
   }
   
-  if (!redirectUri) {
-    return res.status(401).json({
-      error: 'Missing redirect_uri'
-    })
-  }
-
-  if (!state) {
-    return res.status(401).json({
-      error: 'Missing state'
-    })
-  }
-
   const clientIdExists =
     await auth.clientIdExists(clientId)
 
@@ -44,8 +32,7 @@ exports.auth = async (req, res, next) => {
   const username = req.body.username
   const password = req.body.password
 
-  if (!username || !password || 
-    username === '' || password === '') {
+  if (!username || !password) {
       return res.status(403).json({
         error: 'Inccorrect request'
       })
