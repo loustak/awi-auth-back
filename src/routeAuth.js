@@ -1,5 +1,6 @@
 const auth = require('./actionAuth')
 
+
 exports.authorize = async (req, res) => {
   const clientIdExists =
     await auth.clientIdExists(clientId)
@@ -26,15 +27,29 @@ exports.auth = async (req, res) => {
 }
 
 exports.token = async (req, res) => {
-  const clientIdExists =
+
+  clientId = req.params.client_id
+  authorizationCode = req.params.code
+  if(!clientId || !authorizationCode){
+    return res.status(400).json({ error: 'invalid_request' })
+  }
+  const clientIdExists = 
     await auth.clientIdExists(clientId)
 
   if (!clientIdExists) {
     // Error
-    return
+    return res.status(401).json({ error: 'unauthorized_client' })
   }
 
-  return await auth.generateToken(clientId, authorizationCode)
+  const authorizationCodeExists =
+    await auth.findAuthorizeCode(authorizationCode)
+
+  if(!authorizationCodeExists){
+    // Error
+    return res.status(403).json({ error: 'invalid_grant'})
+  }
+
+  return await auth.generateToken(clientId, authorizationCodeExists)
 }
 
 exports.refresh = async (req, res) => {
