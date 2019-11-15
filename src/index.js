@@ -35,7 +35,7 @@ client.on('error', (err) => {
   }
 })
 
-client.on('connectTimeout', (err) => {
+client.on('connectTimeout', () => {
   console.error('Connection timed out, LDAP server cannot be reached')
   console.error('This error may happen when you are not on the same' + 
     ' network as the Polytech LDAP, you can use a VPN to fix this')
@@ -46,11 +46,7 @@ client.on('connectTimeout', (err) => {
 })
 
 client.bind('test@isim.intra', 'test', (err) => {
-  if (err) {
-    console.error(err)
-  } else {
-    console.log('Connected to LDAP')
-  }
+  console.log('Connected to LDAP')
 })
 
 // Load routes and listen for connections
