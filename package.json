@@ -24,7 +24,10 @@
   "homepage": "https://github.com/loustak/awi-auth-back#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "morgan": "^1.9.1"
+    "morgan": "^1.9.1",
+    "ldapjs": "^1.0.2",
+    "uuid": "^3.3.3",
+    "body-parser": "^1.19.0"
   },
   "devDependencies": {
     "jest": "^24.9.0",

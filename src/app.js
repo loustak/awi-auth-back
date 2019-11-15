@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
+var bodyParser = require('body-parser');
 
 const auth = require('./routeAuth')
 
@@ -10,6 +11,10 @@ if (process.env.NODE_ENV === 'prod') {
 } else if (process.env.NODE_ENV === 'dev') {
   app.use(morgan('dev'))
 }
+
+//Body Parser
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Setup routes
 app.get('/', (req, res) => {
