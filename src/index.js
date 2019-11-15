@@ -5,6 +5,10 @@ if (!process.env.APP_ENV) {
   process.env.APP_ENV = 'dev'
 }
 
+if (!process.env.LOGIN_URL) {
+  process.env.LOGIN_URL = `http://localhost:${port}/oauth/auth`
+}
+
 console.log(`Auth server started in ${process.env.APP_ENV}`)
 
 // Check that the DB connection works
@@ -20,6 +24,7 @@ require('./db').connect()
     }
   })
 
+// Check that the LDAP works
 const client = require('./ldap').createLDAPClient()
 
 client.on('error', (err) => {
@@ -48,6 +53,7 @@ client.bind('test@isim.intra', 'test', (err) => {
   }
 })
 
+// Load routes and listen for connections
 const app = require('./app')
 
 app.listen(port, () => {

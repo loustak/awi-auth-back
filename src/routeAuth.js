@@ -1,15 +1,43 @@
 const auth = require('./actionAuth')
 
 exports.authorize = async (req, res) => {
+  const clientId = req.query.client_id
+  const redirectUri = req.query.redirect_uri
+  const state = req.query.state
+
+  if (!clientId) {
+    return res.status(401).json({
+      error: 'Missing client_id'
+    })
+  }
+  
+  if (!redirectUri) {
+    return res.status(401).json({
+      error: 'Missing redirect_uri'
+    })
+  }
+
+  if (!state) {
+    return res.status(401).json({
+      error: 'Missing state'
+    })
+  }
+
   const clientIdExists =
     await auth.clientIdExists(clientId)
 
   if (!clientIdExists) {
-    // Error
-    return
+    return res.status(401).json({
+      error: 'Unknown client_id'
+    })
   }
 
-  // Simply redirect the request to the front.
+  // Simply redirect the request to the front
+  const url = process.env.LOGIN_URL +
+    '?redirect_uri=' + redirectUri +
+    '&state=' + state
+
+  return res.redirect(302, url)
 }
 
 exports.auth = async (req, res, next) => {

@@ -6,11 +6,32 @@ const db = require('./db')
 exports.clientIdExists = async (clientId) => {
   // Return true if the clientId exists in the database,
   // else return false.
+  const sql = `
+    SELECT *
+    FROM client
+    WHERE "client_id"=$1
+  `
+  const { rows } =
+    await db.query(sql, [clientId])
+  return rows.length === 1
 }
 
 exports.findAuthorizeCode = async (authorizeCode) => {
   // Return the line in the database matching this
   // authorizationCode, if noone was found return false.
+  const sql = `
+    SELECT *
+    FROM authorization_code
+    WHERE "code"=$1
+  `
+  const { rows } = await
+    db.query(sql, [authorizeCode])
+  
+  if (rows.rowCount === 1) {
+    return rows[1]
+  }
+
+  return null
 }
 
 exports.auth = async (username, password) => {
