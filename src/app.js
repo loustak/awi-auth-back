@@ -5,13 +5,14 @@ const morgan = require('morgan')
 const bodyParser = require('body-parser')
 
 const { inProduction, inTest } = require('./util')
+const logger = require('./logger')
 const auth = require('./routeAuth')
 
 // Setup correct logger
 if (inProduction()) {
-  app.use(morgan('combined'))
+  app.use(morgan('combined', { "stream": logger.stream }))
 } else if (!inTest()) {
-  app.use(morgan('dev'))
+  app.use(morgan('dev', { "stream": logger.stream }))
 }
 
 // Allow all request to access this server
