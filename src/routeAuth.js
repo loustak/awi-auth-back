@@ -49,7 +49,12 @@ exports.token = async (req, res) => {
     return res.status(403).json({ error: 'invalid_grant'})
   }
 
-  return await auth.generateToken(clientId, authorizationCodeExists)
+  const result = await auth.generateToken(clientId, authorizationCodeExists)
+
+  if(result == null){
+    return res.status(400).json({ error: 'invalid_resource'})
+  }
+  return result
 }
 
 exports.refresh = async (req, res) => {

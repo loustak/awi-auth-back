@@ -18,6 +18,11 @@ exports.userIdExists = async (userId) => {
   else row[0]
 }
 
+exports.deleteAutorizationCode = async (authorizeCode) => {
+  db.query(`DELETE FROM authorization_code where
+  authorization_code = $1`,[authorizeCode])
+}
+
 exports.findAuthorizeCode = async (authorizeCode) => {
 
   const row = await db.query(
@@ -47,7 +52,7 @@ exports.generateToken = async (clientId, authorizationCode) => {
 const userIdExists = this.userIdExists(authorizationCode.user_id)
 if(!userId){
   //Error
-  return 
+  return ""
 }
 const userInfo = {
   first_name: userIdExists.first_name,
@@ -57,11 +62,10 @@ const userInfo = {
 }
 
 //Private and public key
-const privateKEY  = fs.readFileSync('./private.key', 'utf8');
-const publicKEY  = fs.readFileSync('./public.key', 'utf8');
+const privateKEY  = "secret"
 
-//Token signing options
-var signOptions = {
+//Access Token signing options
+var accessSignOptions = {
   issuer: clientId,
   audience: userIdExists.userId,
   algorithm: 'RS256',
@@ -69,10 +73,19 @@ var signOptions = {
 }
 const accessToken = jwt.sign(userInfo, privateKEY, signOptions)
 
+//Refresh Token signing options
+var accessSignOptions = {
+  issuer: clientId,
+  audience: userIdExists.userId,
+  algorithm: 'RS512',
+  expiresIN: "5y"
+}
+
+const refreshToken = jwt.sign("", privateKEY, accessSignOptions) 
 
   return {
     accessToken: accessToken,
-    refreshToken: ''
+    refreshToken: refreshToken
   }
 }
 
