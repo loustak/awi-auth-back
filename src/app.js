@@ -19,7 +19,9 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 // Setup routes
 app.get('/', (req, res) => {
-  res.status(200).send('Homepage of the AWI auth api.')
+  res.status(200).json({
+    success: 'Homepage of the AWI auth api.'
+  })
 })
 
 const fasync = route =>
@@ -40,7 +42,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   console.error(err)
 
-  res.status(500).send({
+  res.status(500).json({
     error: 'Something broke!'
   })
 })

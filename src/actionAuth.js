@@ -3,7 +3,7 @@ var uuid = require('uuid')
 
 const db = require('./db')
 
-const ldapHost = 'ldap://srvdc.polytech.umontpellier.fr'
+const ldapHost = 'ldap://162.38.114.8'
 const ldapPort = 389
 
 exports.clientIdExists = async (clientId) => {
