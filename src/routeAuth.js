@@ -6,7 +6,7 @@ exports.authorize = async (req, res) => {
 
   if (!clientIdExists) {
     // Error
-
+    return
   }
 
   // Simply redirect the request to the front.
