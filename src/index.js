@@ -29,20 +29,12 @@ const client = require('./ldap').createLDAPClient()
 
 client.on('error', (err) => {
   console.error(err)
-
-  if (inProduction() || inIntegration()) {
-    process.exit(-2)
-  }
 })
 
 client.on('connectTimeout', () => {
   console.error('Connection timed out, LDAP server cannot be reached')
   console.error('This error may happen when you are not on the same' + 
     ' network as the Polytech LDAP, you can use a VPN to fix this')
-
-  if (inProduction() || inIntegration()) {
-    process.exit(-3)
-  }
 })
 
 client.bind('test@isim.intra', 'test', (err) => {

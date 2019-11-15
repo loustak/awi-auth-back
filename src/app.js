@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const cors = require('cors')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 
@@ -12,6 +13,9 @@ if (inProduction()) {
 } else if (!inTest()) {
   app.use(morgan('dev'))
 }
+
+// Allow all request to access this server
+app.use(cors())
 
 // Setup form url decoder
 app.use(bodyParser.json());
