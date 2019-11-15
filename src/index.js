@@ -32,8 +32,8 @@ client.on('error', (err) => {
 })
 
 client.on('connectTimeout', () => {
-  console.error('Connection timed out, LDAP server cannot be reached')
-  console.error('This error may happen when you are not on the same' + 
+  console.error('Connection timed out, LDAP server cannot be reached.' +
+    ' This error may happen when you are not on the same' + 
     ' network as the Polytech LDAP, you can use a VPN to fix this')
 })
 
