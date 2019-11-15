@@ -3,25 +3,23 @@ CREATE TABLE client (
    client_name    VARCHAR(1000)
 );
 
-CREATE TABLE authorizaton_code (
-   authorizaton_code   VARCHAR(1000)       PRIMARY KEY,
-   client_id    NUMERIC NOT NULL
+CREATE TABLE "user" (
+   "user_id" NUMERIC PRIMARY KEY,
+   first_name VARCHAR(1000),
+   last_name VARCHAR(1000),
+   section   VARCHAR(1000),
+   "role"    VARCHAR(1000)
+);
+
+
+CREATE TABLE authorization_code (
+   authorization_code   VARCHAR(1000)       PRIMARY KEY,
+   client_id    NUMERIC NOT NULL,
+   "user_id"   NUMERIC NOT NULL REFERENCES user("user_id")
 );
 
 CREATE TABLE token (
    access_token   VARCHAR(1000)       PRIMARY KEY,
    refresh_token   VARCHAR(1000)                ,
-   client_id    NUMERIC NOT NULL
+   client_id    NUMERIC NOT NULL REFERENCES client("client_id")
 );
-
-INSERT INTO client (client_id, client_name)
-VALUES
-   (2,'test');
-
-INSERT INTO code (value_code, client_id)
-VALUES
-   ('codeTest',2);
-
- INSERT INTO token (value_token,refresh_token, client_id)
-VALUES
-   ('token','refreshToken',2);
