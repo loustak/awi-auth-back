@@ -8,6 +8,7 @@ exports.authorize = async (req, res) => {
     // Error
   }
 
+
   // Simply redirect the request to the front.
 }
 
