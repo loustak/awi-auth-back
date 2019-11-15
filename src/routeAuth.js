@@ -65,6 +65,10 @@ exports.refresh = async (req, res) => {
       role: decoded.role
     }
     const newToken = jwt.sign(userInfo,'secret');
-    return await auth.updateToken(clientId, oldRefresh,newToken)
+    await auth.updateToken(clientId, oldRefresh,newToken)
+    res.status(200).json({
+      "access_token":token,
+      "refresh_token":oldRefresh
+    })
   }
 }
