@@ -1,27 +1,39 @@
-CREATE TABLE client (
-   client_id   NUMERIC       PRIMARY KEY,
-   client_name    VARCHAR(1000)
+create table if not exists client
+(
+    client_id   bigint  not null
+        constraint client_pk
+            primary key,
+    client_name varchar not null
 );
 
-CREATE TABLE authorizaton_code (
-   authorizaton_code   VARCHAR(1000)       PRIMARY KEY,
-   client_id    NUMERIC NOT NULL
+create unique index if not exists client_client_id_uindex
+    on client (client_id);
+
+create table if not exists authorization_code
+(
+    code       varchar not null
+        constraint authorization_code_pk
+            primary key,
+    first_name varchar,
+    last_name  varchar,
+    section    varchar,
+    role       varchar
 );
 
-CREATE TABLE token (
-   access_token   VARCHAR(1000)       PRIMARY KEY,
-   refresh_token   VARCHAR(1000)                ,
-   client_id    NUMERIC NOT NULL
+create unique index if not exists authorization_code_code_uindex
+    on authorization_code (code);
+
+create table if not exists token
+(
+    access_token  varchar not null
+        constraint token_pk
+            primary key,
+    refresh_token varchar not null
 );
 
-INSERT INTO client (client_id, client_name)
-VALUES
-   (2,'test');
+create unique index if not exists token_access_token_uindex
+    on token (access_token);
 
-INSERT INTO code (value_code, client_id)
-VALUES
-   ('codeTest',2);
+create unique index if not exists token_refresh_token_uindex
+    on token (refresh_token);
 
- INSERT INTO token (value_token,refresh_token, client_id)
-VALUES
-   ('token','refreshToken',2);
