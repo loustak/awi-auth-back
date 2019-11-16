@@ -14,7 +14,9 @@ const devLogger = createLogger({
   level: 'debug',
   format: format.combine(
     format.colorize(),
-    format.printf(info => `${info.level}: ${info.message}`)
+    format.printf(info => {
+      return `[${info.level}] ${info.message}`
+    })
   ),
   transports: [
     new transports.Console()
@@ -24,10 +26,10 @@ const devLogger = createLogger({
 const prodLogger = createLogger({
   level: 'debug',
   format: format.combine(
-    format.timestamp({
-      format: 'YYYY-MM-DD HH:mm:ss'
-    }),
-    format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
+    format.timestamp(),
+    format.printf(info => { 
+      return `${info.timestamp} [${info.level}] ${info.message}`
+    })
 
   ),
   transports: [
