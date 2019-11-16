@@ -1,6 +1,6 @@
 const uuid = require('uuid')
 
-const { createLDAPClient } = require('./ldap')
+const { ldap, createLDAPClient } = require('./ldap')
 const db = require('./db')
 
 exports.clientIdExists = async (clientId) => {
@@ -59,6 +59,10 @@ exports.auth = async (username, password) => {
 
     client.bind(username + '@isim.intra', password, async (err) => {
       if (err) {
+        if (err instanceof ldap.InvalidCredentialsError) {
+          return resolve(false)
+        }
+
         return reject(err)
       }
 

@@ -12,4 +12,4 @@ exports.createLDAPClient = () => {
   })
 }
 
-exports.module = ldap
+exports.ldap = ldap
