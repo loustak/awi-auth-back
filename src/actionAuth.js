@@ -11,7 +11,7 @@ const {
 } = require('./ldap')
 const db = require('./db')
 
-exports.clientIdExists = async (clientId) => {
+exports.findClientRow = async (clientId) => {
   // Return true if the clientId exists in the database,
   // else return false.
   const sql = `
@@ -21,7 +21,12 @@ exports.clientIdExists = async (clientId) => {
   `
   const { rows } =
     await db.query(sql, [clientId])
-  return rows.length === 1
+
+  if (rows.length === 1) {
+    return rows[0]
+  }
+
+  return null
 }
 
 exports.findAuthorizedRow = async (authorizationCode) => {
@@ -33,8 +38,8 @@ exports.findAuthorizedRow = async (authorizationCode) => {
     WHERE "code"=$1
   `
 
-  const { rows } = await
-    db.query(sql, [authorizationCode])
+  const { rows } =
+    await db.query(sql, [authorizationCode])
   
   if (rows.length === 1) {
     return rows[0]

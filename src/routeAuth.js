@@ -15,25 +15,29 @@ exports.authorize = async (req, res) => {
     })
   }
   
-  const clientIdExists =
-    await auth.clientIdExists(clientId)
+  const client =
+    await auth.findClientRow(clientId)
 
-  if (!clientIdExists) {
+  if (!client) {
     return res.status(401).json({
       error: UNAUTHORIZED_CLIENT,
       message: 'Unknown client_id'
     })
   }
 
+  const appName =
+    client.client_display_name
+
   // Simply redirect the request to the front
   const url = process.env.LOGIN_URL +
     '?redirect_uri=' + redirectUri +
-    '&state=' + state
+    '&state=' + state +
+    '&app_name=' + appName
 
   return res.redirect(302, url)
 }
 
-exports.auth = async (req, res, next) => {
+exports.auth = async (req, res) => {
   const username = req.body.username
   const password = req.body.password
 
@@ -44,10 +48,10 @@ exports.auth = async (req, res, next) => {
       })
     }
 
-  const valid =
+  const authorizationCode =
       await auth.auth(username, password)
 
-  if (!valid) {
+  if (!authorizationCode) {
     // Failed to auth, error
     return res.status(401).json({
       error: UNAUTHORIZED_CLIENT,
@@ -55,10 +59,7 @@ exports.auth = async (req, res, next) => {
     })
   }
 
-  // Notify the front that the authentication
-  // succeeded and return the authorizationCode,
-  // see with Alia
-  const authorizationCode = valid
+  // TODO: Check access rights
 
   return res.status(200).json({
     authorization_code: authorizationCode
@@ -77,10 +78,10 @@ exports.token = async (req, res) => {
     })
   }
 
-  const clientIdExists =
-    await auth.clientIdExists(clientId)
+  const client =
+    await auth.findClientRow(clientId)
 
-  if (!clientIdExists) {
+  if (!client) {
     return res.status(401).json({
       error: UNAUTHORIZED_CLIENT,
       message: 'Unknown client_id'
@@ -120,10 +121,10 @@ exports.refresh = async (req, res) => {
     })
   }
 
-  const clientIdExists =
-    await auth.clientIdExists(clientId)
+  const client =
+    await auth.findClientRow(clientId)
 
-  if (!clientIdExists) {
+  if (!client) {
     return res.status(401).json({
       error: UNAUTHORIZED_CLIENT,
       message: 'Unknown client_id'
@@ -133,7 +134,8 @@ exports.refresh = async (req, res) => {
   let decoded = null
 
   try {
-    decoded = await auth.verifyToken(clientId, clientSecret, refreshToken)
+    decoded =
+      await auth.verifyToken(clientId, clientSecret, refreshToken)
   } catch (ex) {
     return res.status(400).json({
       error: ex.name,
