@@ -136,9 +136,6 @@ exports.auth = async (restriction, username, password) => {
         return reject(err)
       }
 
-      // TODO: Get additionnals infos about the authentified user
-      // such as is firstname, lastname, role and section
-
       const authorizationCode = uuid.v4()
       const data = {
         firstname: username
