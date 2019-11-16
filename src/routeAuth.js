@@ -38,18 +38,31 @@ exports.authorize = async (req, res) => {
 }
 
 exports.auth = async (req, res) => {
+  const clientId = req.body.client_id
   const username = req.body.username
   const password = req.body.password
 
-  if (!username || !password) {
-      return res.status(400).json({
-        error: INVALID_REQUEST,
-        message: 'username or password was missing from the request body'
-      })
-    }
+  if (!clientId || !username || !password) {
+    return res.status(400).json({
+      error: INVALID_REQUEST,
+      message: 'client_id, username or password was missing from the request body'
+    })
+  }
+
+  const client =
+    await auth.findClientRow(clientId)
+
+  if (!client) {
+    return res.status(401).json({
+      error: UNAUTHORIZED_CLIENT,
+      message: 'Unknown client_id'
+    })
+  }
+
+  const restriction = client.client_restriction
 
   const authorizationCode =
-      await auth.auth(username, password)
+      await auth.auth(restriction, username, password)
 
   if (!authorizationCode) {
     // Failed to auth, error

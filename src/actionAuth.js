@@ -104,7 +104,7 @@ exports.verifyToken = async (clientId, clientSecret, token) => {
   return decoded
 }
 
-exports.auth = async (username, password) => {
+exports.auth = async (restriction, username, password) => {
   // Verify user authentication in the LDAP and
   // if valid, create an authorization_code to
   // register in the database along with user's infos.
