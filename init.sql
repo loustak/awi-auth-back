@@ -14,8 +14,8 @@ create table if not exists authorization_code
     code       varchar not null
         constraint authorization_code_pk
             primary key,
-    first_name varchar,
-    last_name  varchar,
+    firstname varchar,
+    lastname  varchar,
     section    varchar,
     role       varchar
 );

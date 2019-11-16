@@ -45,7 +45,7 @@ app.use((req, res, next) => {
 })
 
 app.use((err, req, res, next) => {
-  console.error(err)
+  logger.error(err.stack)
 
   res.status(500).json({
     error: 'Something broke!'

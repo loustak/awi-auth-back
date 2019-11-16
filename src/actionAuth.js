@@ -1,4 +1,5 @@
 const uuid = require('uuid')
+const jwt = require('jsonwebtoken')
 
 const { ldap, createLDAPClient } = require('./ldap')
 const db = require('./db')
@@ -16,7 +17,7 @@ exports.clientIdExists = async (clientId) => {
   return rows.length === 1
 }
 
-exports.findAuthorizeCode = async (authorizeCode) => {
+exports.findAuthorizedRow = async (authorizationCode) => {
   // Return the line in the database matching this
   // authorizationCode, if noone was found return false.
   const sql = `
@@ -24,14 +25,36 @@ exports.findAuthorizeCode = async (authorizeCode) => {
     FROM authorization_code
     WHERE "code"=$1
   `
+
   const { rows } = await
-    db.query(sql, [authorizeCode])
+    db.query(sql, [authorizationCode])
   
-  if (rows.rowCount === 1) {
-    return rows[1]
+  if (rows.length === 1) {
+    let row = rows[0]
+
+    // Format data
+    return {
+      code: row.code,
+      firstname: row.first_name,
+      lastname: row.last_name,
+      section: row.section,
+      role: row.role
+    }
   }
 
   return null
+}
+
+exports.deleteAuthorizedRow = async (authorizationCode) => {
+  // Delete the authorized row corresponding to the given
+  // authorizationCode
+  const sql = `
+    DELETE
+    FROM authorization_code
+    WHERE "code"=$1
+  `
+
+  return await db.query(sql, [authorizationCode])
 }
 
 exports.auth = async (username, password) => {
@@ -66,6 +89,9 @@ exports.auth = async (username, password) => {
         return reject(err)
       }
 
+      // TODO: Get additionnals infos about the authentified user
+      // such as is firstname, lastname, role and section
+
       const authorizationCode = uuid.v4()
       const sql = `
         INSERT INTO authorization_code (code, first_name)
@@ -80,16 +106,21 @@ exports.auth = async (username, password) => {
   })
 }
 
-exports.generateToken = async (clientId, authorizationCode) => {
+exports.generateToken = async (clientId, authorizedRow) => {
   // Create a JWT access_token containing user infos.
-  // Delete the given authorizationCode from the database.
 
-  const row = await this.findAuthorizeCode(authorizationCode)
+  const {
+    code, firstname, lastname, section, role
+  } = authorizedRow
 
-  if (!row) {
-    // authorizationCode not found, errror
-    return
+  var accessSignOptions = {
+    issuer: clientId,
+    audience: `${firstname} ${lastname}`,
+    algorithm: 'RS256',
+    expiresIN: 10 * 60
   }
+
+  // const accessToken = jwt.sign()
 
   return {
     accessToken: '',
