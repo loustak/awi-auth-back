@@ -100,6 +100,8 @@ exports.token = async (req, res) => {
   const { accessToken, refreshToken } =
     await auth.generateToken(clientId, clientSecret, authorizedRow)
 
+  await auth.deleteAuthorizedRow(authorizationCode)
+
   return res.status(200).json({
     access_token: accessToken,
     refresh_token: refreshToken

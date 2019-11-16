@@ -2,14 +2,7 @@ const jwt = require('jsonwebtoken')
 
 const issuer = 'cd355bb5-00ff-4f1b-8f43-3ad69f6f6dea'
 
-exports.getAccessToken = async (clientId, clientSecret, data) => {
-
-  const signOption = {
-    issuer: issuer,
-    audience: clientId,
-    expiresIn: '1h'
-  }
-
+function sign(data, clientSecret, signOption) {
   return new Promise( (resolve, reject) => {
     jwt.sign(data, clientSecret, signOption, (err, token) => {
       if (err) {
@@ -21,6 +14,17 @@ exports.getAccessToken = async (clientId, clientSecret, data) => {
   })
 }
 
+exports.getAccessToken = async (clientId, clientSecret, data) => {
+
+  const signOption = {
+    issuer: issuer,
+    audience: clientId,
+    expiresIn: '1h'
+  }
+
+  return await sign(data, clientSecret, signOption)
+}
+
 exports.getRefreshToken = async (clientId, clientSecret, data) => {
 
   const signOption = {
@@ -29,15 +33,7 @@ exports.getRefreshToken = async (clientId, clientSecret, data) => {
     expiresIn: '1m'
   }
 
-  return new Promise( (resolve, reject) => {
-    jwt.sign(data, clientSecret, signOption, (err, token) => {
-      if (err) {
-        return reject(err)
-      }
-
-      return resolve(token)
-    })
-  })
+  return await sign(data, clientSecret, signOption)
 }
 
 exports.getTokens = async (clientId, clientSecret, data) => {

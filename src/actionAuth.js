@@ -51,6 +51,29 @@ exports.deleteAuthorizedRow = async (authorizationCode) => {
   return await db.query(sql, [authorizationCode])
 }
 
+exports.saveAuthorizationCode = async (code, data) => {
+  const sql = `
+    INSERT INTO authorization_code
+    VALUES ($1, $2, $3, $4, $5)
+  `
+
+  const args = [
+    code, data.firstname, data.lastname, data.section, data.role
+  ]
+
+  return await db.query(sql, args)
+}
+
+exports.saveTokens = async(tokens) => {
+  const sql = `
+    INSERT INTO token
+    VALUES ($1, $2)
+  `
+
+  return await
+    db.query(sql, [tokens.accessToken, tokens.refreshToken])
+}
+
 exports.auth = async (username, password) => {
   // Verify user authentication in the LDAP and
   // if valid, create an authorization_code to
@@ -87,13 +110,11 @@ exports.auth = async (username, password) => {
       // such as is firstname, lastname, role and section
 
       const authorizationCode = uuid.v4()
-      const sql = `
-        INSERT INTO authorization_code (code, first_name)
-        VALUES ($1, $2)
-      `
+      const data = {
+        firstname: username
+      }
 
-      await db.query(sql, [authorizationCode, username])
-        .catch(ex => reject(ex))
+      await saveAuthorizationCode(authorizationCode, data)
 
       return resolve(authorizationCode)
     })
@@ -111,6 +132,8 @@ exports.generateToken =
 
   const tokens =
     await getTokens(clientId, clientSecret, data)
+
+  await this.saveTokens(tokens)
 
   return tokens
 }
