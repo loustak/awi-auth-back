@@ -68,11 +68,12 @@ exports.auth = async (req, res, next) => {
 exports.token = async (req, res) => {
   const clientId = req.body.client_id
   const authorizationCode = req.body.code
+  const clientSecret = req.body.client_secret
 
-  if (!clientId || !authorizationCode) {
+  if (!clientId || !authorizationCode || !clientSecret) {
     return res.status(400).json({
       error: INVALID_REQUEST,
-      message: 'client_id or code was missing from the request body'
+      message: 'client_id, code or client_secret was missing from the request body'
     })
   }
 
@@ -97,7 +98,7 @@ exports.token = async (req, res) => {
   }
 
   const { accessToken, refreshToken } =
-    await auth.generateToken(clientId, authorizedRow)
+    await auth.generateToken(clientId, clientSecret, authorizedRow)
 
   return res.status(200).json({
     access_token: accessToken,

@@ -1,7 +1,10 @@
 const uuid = require('uuid')
-const jwt = require('jsonwebtoken')
+const { getTokens} = require('./token')
 
-const { ldap, createLDAPClient } = require('./ldap')
+const {
+  ldap,
+  createLDAPClient
+} = require('./ldap')
 const db = require('./db')
 
 exports.clientIdExists = async (clientId) => {
@@ -30,16 +33,7 @@ exports.findAuthorizedRow = async (authorizationCode) => {
     db.query(sql, [authorizationCode])
   
   if (rows.length === 1) {
-    let row = rows[0]
-
-    // Format data
-    return {
-      code: row.code,
-      firstname: row.first_name,
-      lastname: row.last_name,
-      section: row.section,
-      role: row.role
-    }
+    return rows[0]
   }
 
   return null
@@ -106,26 +100,19 @@ exports.auth = async (username, password) => {
   })
 }
 
-exports.generateToken = async (clientId, authorizedRow) => {
+exports.generateToken =
+  async (clientId, clientSecret, authorizedRow) => {
   // Create a JWT access_token containing user infos.
 
-  const {
-    code, firstname, lastname, section, role
-  } = authorizedRow
-
-  var accessSignOptions = {
-    issuer: clientId,
-    audience: `${firstname} ${lastname}`,
-    algorithm: 'RS256',
-    expiresIN: 10 * 60
+  const data = {
+    ...authorizedRow,
+    code: undefined
   }
 
-  // const accessToken = jwt.sign()
+  const tokens =
+    await getTokens(clientId, clientSecret, data)
 
-  return {
-    accessToken: '',
-    refreshToken: ''
-  }
+  return tokens
 }
 
 exports.refreshToken = async (clientId, refreshToken) => {

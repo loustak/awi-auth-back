@@ -4,14 +4,23 @@ if (!process.env.APP_ENV) {
   process.env.APP_ENV = 'dev'
 }
 
-const logger = require('./logger')
-const { inProduction, inIntegration } = require('./util')
-const port = 3000
+const {
+  inProduction,
+  inIntegration
+} = require('./util')
 
+// Link to the login of the react app
 if (!process.env.LOGIN_URL) {
-  // Link to the React App
-  process.env.LOGIN_URL = `http://mydash.igpolytech.fr/login`
+  if (inProduction() || inIntegration()) {
+    logger.error('No LOGIN_URL set')
+    process.exit(-1)
+  }
+
+  process.env.LOGIN_URL = 'http://localhost:5000/login'
 }
+
+const logger = require('./logger')
+const port = 3000
 
 logger.info(`Auth server started in ${process.env.APP_ENV}`)
 
