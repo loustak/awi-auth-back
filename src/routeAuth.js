@@ -109,13 +109,52 @@ exports.token = async (req, res) => {
 }
 
 exports.refresh = async (req, res) => {
+  const clientId = req.body.client_id
+  const clientSecret = req.body.client_secret
+  const refreshToken = req.body.refresh_token
+
+  if (!clientId || !clientSecret || !refreshToken ) {
+    return res.status(400).json({
+      error: INVALID_REQUEST,
+      message: 'client_id, client_secret or refresh_token was missing from the request body'
+    })
+  }
+
   const clientIdExists =
     await auth.clientIdExists(clientId)
 
   if (!clientIdExists) {
-    // Error
-    return
+    return res.status(401).json({
+      error: UNAUTHORIZED_CLIENT,
+      message: 'Unknown client_id'
+    })
+  }
+  
+  let decoded = null
+
+  try {
+    decoded = await auth.verifyToken(clientId, clientSecret, refreshToken)
+  } catch (ex) {
+    return res.status(400).json({
+      error: ex.name,
+      message: ex.message
+    })
   }
 
-  return await auth.refreshToken(clientId, refreshToken)
+  const data = {
+    firstname: decoded.firstname,
+    lastname: decoded.lastname,
+    section: decoded.section,
+    role: decoded.role
+  }
+
+  const newAccessToken =
+    await auth.refreshToken(clientId, clientSecret, data)
+
+  await auth.updateRefreshToken(newAccessToken, refreshToken)
+
+  return res.status(200).json({
+    access_token: newAccessToken,
+    refresh_token: refreshToken
+  })
 }

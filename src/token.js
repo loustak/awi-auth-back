@@ -14,6 +14,21 @@ function sign(data, clientSecret, signOption) {
   })
 }
 
+exports.verifyToken = async (clientId, clientSecret, token) => {
+  return new Promise( (resolve, reject) => {
+    jwt.verify(token, clientSecret, {
+      issuer: issuer,
+      audience: clientId
+    }, (err, decoded) => {
+      if (err) {
+        return reject(err)
+      }
+
+      return resolve(decoded)
+    })
+  })
+}
+
 exports.getAccessToken = async (clientId, clientSecret, data) => {
 
   const signOption = {
@@ -30,15 +45,18 @@ exports.getRefreshToken = async (clientId, clientSecret, data) => {
   const signOption = {
     issuer: issuer,
     audience: clientId,
-    expiresIn: '1m'
+    expiresIn: '30d'
   }
 
-  return await sign(data, clientSecret, signOption)
+  return await
+    sign(data, clientSecret, signOption)
 }
 
 exports.getTokens = async (clientId, clientSecret, data) => {
   return {
-    accessToken: await this.getAccessToken(clientId, clientSecret, data),
-    refreshToken: await this.getRefreshToken(clientId, clientSecret, data)
+    accessToken: await
+      this.getAccessToken(clientId, clientSecret, data),
+    refreshToken: await
+      this.getRefreshToken(clientId, clientSecret, data)
   }
 }

@@ -1,5 +1,9 @@
 const uuid = require('uuid')
-const { getTokens} = require('./token')
+const {
+  getTokens,
+  verifyToken,
+  getAccessToken
+} = require('./token')
 
 const {
   ldap,
@@ -74,6 +78,27 @@ exports.saveTokens = async(tokens) => {
     db.query(sql, [tokens.accessToken, tokens.refreshToken])
 }
 
+exports.updateRefreshToken =
+  async (newAccessToken, refreshToken) => {
+  const sql = `
+    UPDATE token
+    SET access_token=$1
+    WHERE refresh_token=$2
+  `
+
+  return await
+    db.query(sql, [newAccessToken, refreshToken])
+}
+
+exports.verifyToken = async (clientId, clientSecret, token) => {
+  // Verify the token and return the data if everything was OK,
+  // else return false
+  const decoded =
+    await verifyToken(clientId, clientSecret, token)
+
+  return decoded
+}
+
 exports.auth = async (username, password) => {
   // Verify user authentication in the LDAP and
   // if valid, create an authorization_code to
@@ -123,7 +148,6 @@ exports.auth = async (username, password) => {
 
 exports.generateToken =
   async (clientId, clientSecret, authorizedRow) => {
-  // Create a JWT access_token containing user infos.
 
   const data = {
     ...authorizedRow,
@@ -138,9 +162,11 @@ exports.generateToken =
   return tokens
 }
 
-exports.refreshToken = async (clientId, refreshToken) => {
-  return {
-    accessToken: '',
-    refreshToken: ''
-  }
+exports.refreshToken =
+  async (clientId, clientSecret, data) => {
+
+  const accessToken = 
+    await getAccessToken(clientId, clientSecret, data)
+
+  return accessToken
 }
