@@ -1,6 +1,6 @@
 create table if not exists client
 (
-    client_id   bigint  not null
+    client_id   varchar  not null
         constraint client_pk
             primary key,
     client_name varchar not null

@@ -139,7 +139,7 @@ exports.auth = async (username, password) => {
         firstname: username
       }
 
-      await saveAuthorizationCode(authorizationCode, data)
+      await this.saveAuthorizationCode(authorizationCode, data)
 
       return resolve(authorizationCode)
     })

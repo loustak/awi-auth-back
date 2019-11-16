@@ -60,7 +60,7 @@ exports.auth = async (req, res, next) => {
   // see with Alia
   const authorizationCode = valid
 
-  res.status(200).json({
+  return res.status(200).json({
     authorization_code: authorizationCode
   })
 }
