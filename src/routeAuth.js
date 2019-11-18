@@ -48,6 +48,9 @@ exports.authorize = async (req, res) => {
   const appName =
     client.client_display_name
 
+  const authorizedHosts =
+    client.client_hosts.split(' ')
+
   // Check that the redirect_uri match the
   // client_domain inside the database
   const decodedURI = decodeURIComponent(redirectUri)
@@ -60,7 +63,6 @@ exports.authorize = async (req, res) => {
     })
   }
 
-  const authorizedHosts = client.client_hosts.split(' ')
   const hostIsValid = authorizedHosts.includes(hostname)
 
   if (!hostIsValid) {
