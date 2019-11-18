@@ -76,7 +76,10 @@ exports.authorize = async (req, res) => {
     })
   }
 
-  const hostIsValid = authorizedHosts.includes(hostname)
+  console.log(hostname)
+
+  const hostIsValid =
+    authorizedHosts.includes(hostname)
 
   if (!hostIsValid) {
     return res.status(400).json({
@@ -86,7 +89,8 @@ exports.authorize = async (req, res) => {
     })
   }
 
-  // Simply redirect the request to the front
+  // Simply redirect the request to the
+  // login page in the front end
   const url = process.env.LOGIN_URL +
     '?client_id=' + clientId +
     '&redirect_uri=' + redirectUri +

@@ -11,11 +11,16 @@ const auth = require('./routeAuth')
 // Disable the X-Powered-By header info
 app.disable('x-powered-by')
 
-// Setup correct logger
+// Setup correct logger depending
+// on environnement
 if (inProduction()) {
-  app.use(morgan('combined', { "stream": logger.stream }))
+  app.use(morgan('combined', {
+    "stream": logger.stream 
+  }))
 } else if (!inTest()) {
-  app.use(morgan('dev', { "stream": logger.stream }))
+  app.use(morgan('dev', {
+    "stream": logger.stream
+  }))
 }
 
 // Allow all request to access this server
@@ -54,7 +59,8 @@ app.use((err, req, res, next) => {
   logger.error(err.stack)
 
   res.status(500).json({
-    error: 'Something broke!'
+    error: 'server_error'
+    message: 'Something broke!'
   })
 })
 
