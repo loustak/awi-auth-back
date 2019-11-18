@@ -56,7 +56,17 @@ exports.authorize = async (req, res) => {
   // Check that the redirect_uri match the
   // client_domain inside the database
   const decodedURI = decodeURIComponent(redirectUri)
-  const hostname = new URL(decodedURI).hostname
+
+  let hostname = null
+  try {
+    hostname = new URL(decodedURI).hostname
+  } catch (ex) {
+    return res.status(400).json({
+      error: INVALID_REQUEST,
+      message: 'invalid URI, don\'t forget to add' +
+        ' the http or https in the redirect_uri'
+    })
+  }
 
   if (!hostname || hostname == '') {
     return res.status(400).json({
