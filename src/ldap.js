@@ -1,5 +1,7 @@
 const ldap = require('ldapjs')
 
+// This URL allow us to connect to LDAP
+// on a non Polytech network
 const ldapHost = 'ldap://162.38.114.8'
 const ldapPort = 389
 const url = `${ldapHost}:${ldapPort}`
