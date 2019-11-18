@@ -1,8 +1,7 @@
 const uuid = require('uuid')
 const {
   getTokens,
-  verifyToken,
-  getAccessToken
+  verifyToken
 } = require('./token')
 
 const {
@@ -44,17 +43,7 @@ exports.findAuthorizedRow = async (authorizationCode) => {
   return null
 }
 
-exports.deleteAuthorizedRow = async (authorizationCode) => {
-  const sql = `
-    DELETE
-    FROM authorization_code
-    WHERE "code"=$1
-  `
-
-  return await db.query(sql, [authorizationCode])
-}
-
-exports.saveAuthorizationCode = async (code, data) => {
+exports.saveAuthorization = async (code, data) => {
   const sql = `
     INSERT INTO authorization_code
     VALUES ($1, $2, $3, $4, $5)
@@ -67,33 +56,14 @@ exports.saveAuthorizationCode = async (code, data) => {
   return await db.query(sql, args)
 }
 
-exports.saveTokens = async(tokens) => {
+exports.deleteAuthorization = async (authorizationCode) => {
   const sql = `
-    INSERT INTO token
-    VALUES ($1, $2)
+    DELETE
+    FROM authorization_code
+    WHERE "code"=$1
   `
 
-  return await
-    db.query(sql, [tokens.accessToken, tokens.refreshToken])
-}
-
-exports.updateRefreshToken =
-  async (newAccessToken, refreshToken) => {
-  const sql = `
-    UPDATE token
-    SET access_token=$1
-    WHERE refresh_token=$2
-  `
-
-  return await
-    db.query(sql, [newAccessToken, refreshToken])
-}
-
-exports.verifyToken = async (clientId, clientSecret, token) => {
-  const decoded =
-    await verifyToken(clientId, clientSecret, token)
-
-  return decoded
+  return await db.query(sql, [authorizationCode])
 }
 
 exports.auth = async (restriction, username, password) => {
@@ -129,34 +99,9 @@ exports.auth = async (restriction, username, password) => {
         firstname: username
       }
 
-      await this.saveAuthorizationCode(authorizationCode, data)
+      await this.saveAuthorization(authorizationCode, data)
 
       return resolve(authorizationCode)
     })
   })
-}
-
-exports.generateToken =
-  async (clientId, clientSecret, authorizedRow) => {
-
-  const data = {
-    ...authorizedRow,
-    code: undefined
-  }
-
-  const tokens =
-    await getTokens(clientId, clientSecret, data)
-
-  await this.saveTokens(tokens)
-
-  return tokens
-}
-
-exports.refreshToken =
-  async (clientId, clientSecret, data) => {
-
-  const accessToken = 
-    await getAccessToken(clientId, clientSecret, data)
-
-  return accessToken
 }

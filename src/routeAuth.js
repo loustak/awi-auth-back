@@ -1,5 +1,10 @@
 const auth = require('./actionAuth')
 
+const {
+  getAccessToken,
+  verifyToken
+} = require('./token')
+
 /*
  * This file expose all the routes related
  * to authentication.
@@ -184,7 +189,7 @@ exports.token = async (req, res) => {
   const { accessToken, refreshToken } =
     await auth.generateToken(clientId, clientSecret, authorizedRow)
 
-  await auth.deleteAuthorizedRow(authorizationCode)
+  await auth.deleteAuthorization(authorizationCode)
 
   return res.status(200).json({
     access_token: accessToken,
@@ -223,7 +228,7 @@ exports.refresh = async (req, res) => {
 
   try {
     decoded =
-      await auth.verifyToken(clientId, clientSecret, refreshToken)
+      await verifyToken(clientId, clientSecret, refreshToken)
   } catch (ex) {
     return res.status(400).json({
       error: ex.name,
@@ -239,9 +244,7 @@ exports.refresh = async (req, res) => {
   }
 
   const newAccessToken =
-    await auth.refreshToken(clientId, clientSecret, data)
-
-  await auth.updateRefreshToken(newAccessToken, refreshToken)
+    await getAccessToken(clientId, clientSecret, data)
 
   return res.status(200).json({
     access_token: newAccessToken,

@@ -1,15 +1,18 @@
 create table if not exists client
 (
-    client_id           varchar                                      not null
-        constraint client_pk
-            primary key,
-    client_name         varchar                                      not null,
-    client_display_name varchar default 'No name'::character varying not null,
-    client_restriction  integer default 0                            not null
+  client_id           varchar                                      not null
+  constraint client_pk
+  primary key,
+  client_name         varchar                                      not null,
+  client_display_name varchar default 'No name'::character varying not null,
+  client_restriction  integer default 0                            not null,
+  client_secret       varchar,
+  client_hosts        varchar
 );
 
 create unique index if not exists client_client_id_uindex
     on client (client_id);
+
 
 create table if not exists authorization_code
 (
@@ -25,8 +28,7 @@ create table if not exists authorization_code
 create unique index if not exists authorization_code_code_uindex
     on authorization_code (code);
 
-create table if not exists token
-(
+create table if not exists token (
     access_token  varchar not null
         constraint token_pk
             primary key,
