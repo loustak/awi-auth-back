@@ -29,7 +29,9 @@ app.options('*', cors())
 
 // Setup form url decoder
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({
+  extended: true
+}))
 
 // Setup routes
 app.get('/', (req, res) => {
