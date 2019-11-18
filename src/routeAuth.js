@@ -87,7 +87,8 @@ exports.authorize = async (req, res) => {
 
   // Simply redirect the request to the front
   const url = process.env.LOGIN_URL +
-    '?redirect_uri=' + redirectUri +
+    '?client_id=' + clientId +
+    '&redirect_uri=' + redirectUri +
     '&state=' + state +
     '&app_name=' + appName
 
