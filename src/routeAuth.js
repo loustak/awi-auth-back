@@ -1,5 +1,3 @@
-const url = require('url')
-
 const auth = require('./actionAuth')
 
 /*
