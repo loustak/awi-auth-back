@@ -8,6 +8,9 @@ const { inProduction, inTest } = require('./util')
 const logger = require('./logger')
 const auth = require('./routeAuth')
 
+// Disable the X-Powered-By header info
+app.disable('x-powered-by')
+
 // Setup correct logger
 if (inProduction()) {
   app.use(morgan('combined', { "stream": logger.stream }))

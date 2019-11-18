@@ -42,10 +42,10 @@ create unique index if not exists token_refresh_token_uindex
     on token (refresh_token);
 
 
-INSERT INTO client (client_id, client_name, client_display_name, client_restriction) VALUES ('o2-g2', 'o2-g2 (enseignement)', 'O2 - G2 Enseignement', 0);
-INSERT INTO client (client_id, client_name, client_display_name, client_restriction) VALUES ('prello', 'prello', 'Prello', 0);
-INSERT INTO client (client_id, client_name, client_display_name, client_restriction) VALUES ('o1-g2', 'o1-g2 (enseignement)', 'O1 - G2 Enseignement', 0);
-INSERT INTO client (client_id, client_name, client_display_name, client_restriction) VALUES ('o1-g1', 'o1-g1 (recrutement)', 'O1 - G1 Recrutement', 2);
-INSERT INTO client (client_id, client_name, client_display_name, client_restriction) VALUES ('network', 'reseau social', 'Réseau social', 1);
-INSERT INTO client (client_id, client_name, client_display_name, client_restriction) VALUES ('o1-g3', 'o1-g3 (NOUS)', 'O1 - G3 Dashboard', 0);
-INSERT INTO client (client_id, client_name, client_display_name, client_restriction) VALUES ('o2-g1', 'o2-g1 (recrutement)', '02 - G1 Recrutement', 2);
+INSERT INTO client (client_id, client_name, client_display_name, client_restriction, client_secret, client_hosts) VALUES ('o2-g1', 'o2-g1 (recrutement)', '02 - G1 Recrutement', 2, 'secret-o2-g1', '0.0.0.0 127.0.0.1 localhost mydash.igpolytech.fr mydash-dev.igpolytech.fr');
+INSERT INTO client (client_id, client_name, client_display_name, client_restriction, client_secret, client_hosts) VALUES ('o2-g2', 'o2-g2 (enseignement)', 'O2 - G2 Enseignement', 0, 'secret-o2-g2', '0.0.0.0 127.0.0.1 localhost mydash.igpolytech.fr mydash-dev.igpolytech.fr');
+INSERT INTO client (client_id, client_name, client_display_name, client_restriction, client_secret, client_hosts) VALUES ('o1-g1', 'o1-g1 (recrutement)', 'O1 - G1 Recrutement', 2, 'secret-O1-g1', '0.0.0.0 127.0.0.1 localhost mydash.igpolytech.fr mydash-dev.igpolytech.fr');
+INSERT INTO client (client_id, client_name, client_display_name, client_restriction, client_secret, client_hosts) VALUES ('o1-g2', 'o1-g2 (enseignement)', 'O1 - G2 Enseignement', 0, 'secret-o1-g2', '0.0.0.0 127.0.0.1 localhost mydash.igpolytech.fr mydash-dev.igpolytech.fr');
+INSERT INTO client (client_id, client_name, client_display_name, client_restriction, client_secret, client_hosts) VALUES ('network', 'reseau social', 'Réseau social', 1, 'secret-network', '0.0.0.0 127.0.0.1 localhost mydash.igpolytech.fr mydash-dev.igpolytech.fr');
+INSERT INTO client (client_id, client_name, client_display_name, client_restriction, client_secret, client_hosts) VALUES ('o1-g3', 'o1-g3 (NOUS)', 'O1 - G3 Dashboard', 0, 'secret-dashboard', '0.0.0.0 127.0.0.1 localhost mydash.igpolytech.fr mydash-dev.igpolytech.fr');
+INSERT INTO client (client_id, client_name, client_display_name, client_restriction, client_secret, client_hosts) VALUES ('prello', 'prello', 'Prello', 0, 'secret-prello', '0.0.0.0 127.0.0.1 localhost mydash.igpolytech.fr mydash-dev.igpolytech.fr');
