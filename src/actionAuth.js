@@ -136,6 +136,8 @@ exports.auth = async (restriction, username, password) => {
         return reject(err)
       }
 
+      // TODO: Check restrictions
+
       const authorizationCode = uuid.v4()
       const data = {
         firstname: username

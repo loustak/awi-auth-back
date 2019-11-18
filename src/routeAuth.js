@@ -11,7 +11,8 @@ exports.authorize = async (req, res) => {
   if (!clientId || !redirectUri || !state) {
     return res.status(400).json({
       error: INVALID_REQUEST,
-      message: 'client_id, redirect_uri or state was missing from the string query'
+      message: 'client_id, redirect_uri or state' +
+        ' was missing from the string query'
     })
   }
   
@@ -45,7 +46,8 @@ exports.auth = async (req, res) => {
   if (!clientId || !username || !password) {
     return res.status(400).json({
       error: INVALID_REQUEST,
-      message: 'client_id, username or password was missing from the request body'
+      message: 'client_id, username or password' +
+        ' was missing from the request body'
     })
   }
 
@@ -82,12 +84,12 @@ exports.auth = async (req, res) => {
 exports.token = async (req, res) => {
   const clientId = req.body.client_id
   const authorizationCode = req.body.code
-  const clientSecret = req.body.client_secret
 
-  if (!clientId || !authorizationCode || !clientSecret) {
+  if (!clientId || !authorizationCode) {
     return res.status(400).json({
       error: INVALID_REQUEST,
-      message: 'client_id, code or client_secret was missing from the request body'
+      message: 'client_id or code' +
+        ' was missing from the request body'
     })
   }
 
@@ -100,6 +102,8 @@ exports.token = async (req, res) => {
       message: 'Unknown client_id'
     })
   }
+
+  const clientSecret = client.client_secret
 
   const authorizedRow =
     await auth.findAuthorizedRow(authorizationCode)
@@ -124,13 +128,13 @@ exports.token = async (req, res) => {
 
 exports.refresh = async (req, res) => {
   const clientId = req.body.client_id
-  const clientSecret = req.body.client_secret
   const refreshToken = req.body.refresh_token
 
-  if (!clientId || !clientSecret || !refreshToken ) {
+  if (!clientId || !refreshToken ) {
     return res.status(400).json({
       error: INVALID_REQUEST,
-      message: 'client_id, client_secret or refresh_token was missing from the request body'
+      message: 'client_id  or refresh_token' +
+        ' was missing from the request body'
     })
   }
 
@@ -143,6 +147,8 @@ exports.refresh = async (req, res) => {
       message: 'Unknown client_id'
     })
   }
+
+  const clientSecret = client.client_secret
   
   let decoded = null
 
