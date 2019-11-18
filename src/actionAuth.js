@@ -12,8 +12,6 @@ const {
 const db = require('./db')
 
 exports.findClientRow = async (clientId) => {
-  // Return true if the clientId exists in the database,
-  // else return false.
   const sql = `
     SELECT *
     FROM client
@@ -30,8 +28,6 @@ exports.findClientRow = async (clientId) => {
 }
 
 exports.findAuthorizedRow = async (authorizationCode) => {
-  // Return the line in the database matching this
-  // authorizationCode, if noone was found return false.
   const sql = `
     SELECT *
     FROM authorization_code
@@ -49,8 +45,6 @@ exports.findAuthorizedRow = async (authorizationCode) => {
 }
 
 exports.deleteAuthorizedRow = async (authorizationCode) => {
-  // Delete the authorized row corresponding to the given
-  // authorizationCode
   const sql = `
     DELETE
     FROM authorization_code
@@ -96,8 +90,6 @@ exports.updateRefreshToken =
 }
 
 exports.verifyToken = async (clientId, clientSecret, token) => {
-  // Verify the token and return the data if everything was OK,
-  // else return false
   const decoded =
     await verifyToken(clientId, clientSecret, token)
 
@@ -105,12 +97,6 @@ exports.verifyToken = async (clientId, clientSecret, token) => {
 }
 
 exports.auth = async (restriction, username, password) => {
-  // Verify user authentication in the LDAP and
-  // if valid, create an authorization_code to
-  // register in the database along with user's infos.
-  // If the user is authentified return the authorization code,
-  // else return false.
-
   return new Promise( (resolve, reject) => {
     if (!username || !password || 
       username === '' || password === '') {
