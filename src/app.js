@@ -59,7 +59,7 @@ app.use((err, req, res, next) => {
   logger.error(err.stack)
 
   res.status(500).json({
-    error: 'server_error'
+    error: 'server_error',
     message: 'Something broke!'
   })
 })

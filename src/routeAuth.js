@@ -76,8 +76,6 @@ exports.authorize = async (req, res) => {
     })
   }
 
-  console.log(hostname)
-
   const hostIsValid =
     authorizedHosts.includes(hostname)
 
