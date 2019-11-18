@@ -4,6 +4,7 @@ const auth = require('./actionAuth')
 
 const {
   getAccessToken,
+  getTokens,
   verifyToken
 } = require('./token')
 
@@ -201,8 +202,13 @@ exports.token = async (req, res) => {
     })
   }
 
+  const data = {
+    ...authorizedRow,
+    code: undefined
+  }
+
   const { accessToken, refreshToken } =
-    await auth.generateToken(clientId, clientSecret, authorizedRow)
+    await getTokens(clientId, clientSecret, authorizedRow)
 
   await auth.deleteAuthorization(authorizationCode)
 
@@ -251,15 +257,8 @@ exports.refresh = async (req, res) => {
     })
   }
 
-  const data = {
-    firstname: decoded.firstname,
-    lastname: decoded.lastname,
-    section: decoded.section,
-    role: decoded.role
-  }
-
   const newAccessToken =
-    await getAccessToken(clientId, clientSecret, data)
+    await getAccessToken(clientId, clientSecret, decoded)
 
   return res.status(200).json({
     access_token: newAccessToken,

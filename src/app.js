@@ -20,6 +20,7 @@ if (inProduction()) {
 
 // Allow all request to access this server
 app.use(cors())
+app.options('*', cors())
 
 // Setup form url decoder
 app.use(bodyParser.json());
