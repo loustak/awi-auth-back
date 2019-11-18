@@ -94,14 +94,14 @@ exports.auth = async (restriction, username, password) => {
 
       // TODO: Check restrictions
 
-      const authorizationCode = uuid.v4()
+      const code = uuid.v4()
       const data = {
         firstname: username
       }
 
-      await this.saveAuthorization(authorizationCode, data)
+      await this.saveAuthorization(code, data)
 
-      return resolve(authorizationCode)
+      return resolve(code)
     })
   })
 }

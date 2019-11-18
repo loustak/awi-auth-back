@@ -134,10 +134,10 @@ exports.auth = async (req, res) => {
 
   const restriction = client.client_restriction
 
-  const authorizationCode =
+  const code =
       await auth.auth(restriction, username, password)
 
-  if (!authorizationCode) {
+  if (!code) {
     // Failed to auth, error
     return res.status(401).json({
       error: UNAUTHORIZED_CLIENT,
@@ -148,7 +148,7 @@ exports.auth = async (req, res) => {
   // TODO: Check access rights
 
   return res.status(200).json({
-    authorization_code: authorizationCode
+    code: code
   })
 }
 

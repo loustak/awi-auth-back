@@ -38,10 +38,10 @@ const fasync = route =>
   (req, res, next) =>
     Promise.resolve(route(req, res)).catch(next)
 
-app.get('/oauth/authorize', fasync(auth.authorize))
-app.post('/oauth/auth', fasync(auth.auth))
-app.post('/oauth/token', fasync(auth.token))
-app.post('/oauth/refresh', fasync(auth.refresh))
+app.get('/authorize', fasync(auth.authorize))
+app.post('/auth', fasync(auth.auth))
+app.post('/token', fasync(auth.token))
+app.post('/refresh', fasync(auth.refresh))
 
 app.use((req, res, next) => {
   res.status(404).json({
