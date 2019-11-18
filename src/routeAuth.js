@@ -200,7 +200,7 @@ exports.token = async (req, res) => {
   if (!authorizedRow) {
     return res.status(401).json({
       error: UNAUTHORIZED_CLIENT,
-      message: 'Invalid authorization_code'
+      message: 'Invalid code'
     })
   }
 
