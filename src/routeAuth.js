@@ -76,8 +76,15 @@ exports.authorize = async (req, res) => {
     })
   }
 
+  // Check that the host is either local or
+  // an authorized hostname as defined in the
+  // database
   const hostIsValid =
-    authorizedHosts.includes(hostname)
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === '0.0.0.0' ||
+    hostname === '[::1]' ||
+    authorizedHosts.includes(hostname) ||
 
   if (!hostIsValid) {
     return res.status(400).json({
