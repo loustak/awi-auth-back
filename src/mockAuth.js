@@ -57,6 +57,8 @@ module.exports = (username, password) => {
       user.password === password
   })
 
+  console.log(user)
+
   if (user) return user[0]
   else return false
 }
