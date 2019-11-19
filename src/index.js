@@ -9,6 +9,9 @@ const {
   inIntegration
 } = require('./util')
 
+const logger = require('./logger')
+const port = 3000
+
 // Link to the login of the react app
 if (!process.env.LOGIN_URL) {
   if (inProduction() || inIntegration()) {
@@ -18,9 +21,6 @@ if (!process.env.LOGIN_URL) {
 
   process.env.LOGIN_URL = 'http://localhost:5000/login'
 }
-
-const logger = require('./logger')
-const port = 3000
 
 logger.info(`Auth server started in ${process.env.APP_ENV}`)
 
@@ -46,11 +46,11 @@ client.on('error', (err) => {
 
 client.on('connectTimeout', () => {
   logger.warn('Connection timed out, LDAP server cannot be reached.' +
-    ' This may happen when you are not on the same' + 
+    ' This may happen when you are not on the same' +
     ' network as the Polytech LDAP, you can use a VPN to fix this')
 })
 
-client.bind('test@isim.intra', 'test', (err) => {
+client.bind('test@isim.intra', 'test', () => {
   logger.info('Connected to LDAP')
 })
 

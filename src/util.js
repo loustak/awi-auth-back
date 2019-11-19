@@ -1,5 +1,5 @@
 
-/* 
+/*
  * Functions to check the app environnement.
  * Use theme instead of checking directly
  * process.env;APP_ENV.

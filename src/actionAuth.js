@@ -1,8 +1,4 @@
 const uuid = require('uuid')
-const {
-  getTokens,
-  verifyToken
-} = require('./token')
 
 const {
   ldap,
@@ -43,7 +39,7 @@ exports.findAuthorizedRow = async (authorizationCode) => {
 
   const { rows } =
     await db.query(sql, [authorizationCode])
-  
+
   if (rows.length === 1) {
     return rows[0]
   }
@@ -65,7 +61,7 @@ exports.saveAuthorization = async (code, data) => {
     code, data.firstname, data.lastname, data.section, data.role
   ]
 
-  return await db.query(sql, args)
+  return db.query(sql, args)
 }
 
 /*
@@ -79,7 +75,7 @@ exports.deleteAuthorization = async (authorizationCode) => {
     WHERE "code"=$1
   `
 
-  return await db.query(sql, [authorizationCode])
+  return db.query(sql, [authorizationCode])
 }
 
 /*
@@ -92,11 +88,11 @@ exports.deleteAuthorization = async (authorizationCode) => {
  * restriction = 2 means only teachers can connect.
  */
 exports.auth = async (restriction, username, password) => {
-  return new Promise( (resolve, reject) => {
-    if (!username || !password || 
+  return new Promise((resolve, reject) => {
+    if (!username || !password ||
       username === '' || password === '') {
-        return resolve(false)
-      }
+      return resolve(false)
+    }
 
     const client = createLDAPClient()
 

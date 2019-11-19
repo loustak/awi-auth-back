@@ -27,7 +27,7 @@ const prodLogger = createLogger({
   level: 'debug',
   format: format.combine(
     format.timestamp(),
-    format.printf(info => { 
+    format.printf(info => {
       return `${info.timestamp} [${info.level}] ${info.message}`
     })
 

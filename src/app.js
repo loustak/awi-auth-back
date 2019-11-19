@@ -15,11 +15,11 @@ app.disable('x-powered-by')
 // on environnement
 if (inProduction()) {
   app.use(morgan('combined', {
-    "stream": logger.stream 
+    stream: logger.stream
   }))
 } else if (!inTest()) {
   app.use(morgan('dev', {
-    "stream": logger.stream
+    stream: logger.stream
   }))
 }
 
@@ -28,7 +28,7 @@ app.use(cors())
 app.options('*', cors())
 
 // Setup form url decoder
-app.use(bodyParser.json());
+app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
   extended: true
 }))
