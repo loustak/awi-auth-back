@@ -27,7 +27,7 @@ const prodLogger = createLogger({
   level: 'debug',
   format: format.combine(
     format.timestamp(),
-    format.printf(info => { 
+    format.printf(info => {
       return `${info.timestamp} [${info.level}] ${info.message}`
     })
 
@@ -42,6 +42,8 @@ if (inLocalDev()) {
   logger = devLogger
 } else if (inProduction() || inIntegration()) {
   logger = prodLogger
+} else {
+  logger = devLogger
 }
 
 logger.stream = {
