@@ -267,11 +267,11 @@ exports.refresh = async (req, res) => {
   }
 
   const data = {
-    ...decoded,
-    aud: undefined,
-    iat: undefined,
-    exp: undefined,
-    iss: undefined
+    firstname: decoded.firstname,
+    lastname: decoded.lastname,
+    email: decoded.email,
+    role: decoded.role,
+    section: decoded.section
   }
 
   const newAccessToken =
