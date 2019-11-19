@@ -89,7 +89,7 @@ exports.deleteAuthorization = (authorizationCode) => {
  * restriction = 2 means only teachers can connect.
  */
 exports.auth = (restriction, username, password) => {
-  return new Promise((resolve, reject) => {
+  return new Promise( async (resolve, reject) => {
     if (!username || !password ||
       username === '' || password === '') {
       return resolve(false)
@@ -118,8 +118,8 @@ exports.auth = (restriction, username, password) => {
         (restriction === 2 && userMocked.role === 'admin')) {
 
         const code = uuid.v4()
-        this.saveAuthorization(code, userMocked)
-          .then(() => resolve(code))
+        await this.saveAuthorization(code, userMocked)
+        return resolve(code)
       }
     }
 
