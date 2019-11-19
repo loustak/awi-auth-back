@@ -111,16 +111,13 @@ exports.auth = (restriction, username, password) => {
       mockedAuth(username, password)
 
     if (userMocked) {
-      const code = uuid.v4()
 
       if (restriction === 0 ||
         (restriction === 1 && userMocked.role === 'student') ||
-        (restriction === 2 && 
-          (userMocked.role === 'teacher' ||
-           userMocked.role === 'admin'))) {
+        (restriction === 2 && userMocked.role === 'teacher') ||
+        (restriction === 2 && userMocked.role === 'admin')) {
 
-        console.log(userMocked)
-
+        const code = uuid.v4()
         this.saveAuthorization(code, userMocked)
           .then(() => resolve(code))
       }
