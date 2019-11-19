@@ -4,6 +4,7 @@ const {
   ldap,
   createLDAPClient
 } = require('./ldap')
+const mockedAuth = require('./mockAuth')
 const db = require('./db')
 
 /*
@@ -104,6 +105,25 @@ exports.auth = async (restriction, username, password) => {
       return reject(err)
     })
 
+    // TODO: Use real LDAP data
+    // TODO: Check restrictions
+    const userMocked =
+      mockedAuth(username, password)
+
+    if (userMocked) {
+      const code = uuid.v4()
+
+      if (restriction === 0 ||
+        (restriction === 1 && userMocked.section === 'student') ||
+        (restriction === 2 && userMocked.section === 'teacher')) {
+
+        console.log(userMocked)
+
+        this.saveAuthorization(code, userMocked)
+          .then(() => resolve(code))
+      }
+    }
+
     client.bind(username + '@isim.intra', password, async (err) => {
       if (err) {
         if (err instanceof ldap.InvalidCredentialsError) {
@@ -113,11 +133,13 @@ exports.auth = async (restriction, username, password) => {
         return reject(err)
       }
 
-      // TODO: Check restrictions
-
       const code = uuid.v4()
       const data = {
-        firstname: username
+        firstname: username.split('.')[0],
+        lastname: username.split('.')[1],
+        email: username + '@etu.umontpellier.fr',
+        role: 'student',
+        section: 'ig5'
       }
 
       await this.saveAuthorization(code, data)
