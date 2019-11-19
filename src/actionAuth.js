@@ -114,8 +114,10 @@ exports.auth = (restriction, username, password) => {
       const code = uuid.v4()
 
       if (restriction === 0 ||
-        (restriction === 1 && userMocked.section === 'student') ||
-        (restriction === 2 && userMocked.section === 'teacher')) {
+        (restriction === 1 && userMocked.role === 'student') ||
+        (restriction === 2 && 
+          (userMocked.role === 'teacher' ||
+           userMocked.role === 'admin'))) {
 
         console.log(userMocked)
 
