@@ -266,8 +266,16 @@ exports.refresh = async (req, res) => {
     })
   }
 
+  const data = {
+    ...decoded,
+    aud: undefined,
+    iat: undefined,
+    exp: undefined,
+    iss: undefined
+  }
+
   const newAccessToken =
-    await getAccessToken(clientId, clientSecret, decoded)
+    await getAccessToken(clientId, clientSecret, data)
 
   return res.status(200).json({
     access_token: newAccessToken,

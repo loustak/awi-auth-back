@@ -52,7 +52,7 @@ exports.findAuthorizedRow = async (authorizationCode) => {
  * Save and authorization access
  * in the database
  */
-exports.saveAuthorization = async (code, data) => {
+exports.saveAuthorization = (code, data) => {
   const sql = `
     INSERT INTO authorization_code
     VALUES ($1, $2, $3, $4, $5)
@@ -69,7 +69,7 @@ exports.saveAuthorization = async (code, data) => {
  * Remove an authorization access
  * from the database
  */
-exports.deleteAuthorization = async (authorizationCode) => {
+exports.deleteAuthorization = (authorizationCode) => {
   const sql = `
     DELETE
     FROM authorization_code
@@ -88,7 +88,7 @@ exports.deleteAuthorization = async (authorizationCode) => {
  * restriction = 1 means only students can connect.
  * restriction = 2 means only teachers can connect.
  */
-exports.auth = async (restriction, username, password) => {
+exports.auth = (restriction, username, password) => {
   return new Promise((resolve, reject) => {
     if (!username || !password ||
       username === '' || password === '') {
