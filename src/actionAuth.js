@@ -102,7 +102,7 @@ exports.auth = (restriction, username, password) => {
 
     if (userMocked) {
 
-      if (restriction == 0 ||
+      if ((restriction == 0) ||
         (restriction == 1 && userMocked.role == 'student') ||
         (restriction == 2 && userMocked.role == 'teacher') ||
         (restriction == 2 && userMocked.role == 'admin')) {
