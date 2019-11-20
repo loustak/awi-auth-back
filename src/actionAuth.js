@@ -86,13 +86,29 @@ exports.deleteAuthorization = (authorizationCode) => {
  *
  * restriction = 0 means everyone can connect.
  * restriction = 1 means only students can connect.
- * restriction = 2 means only teachers can connect.
+ * restriction = 2 means only teachers and admin can connect.
  */
 exports.auth = (restriction, username, password) => {
   return new Promise( async (resolve, reject) => {
     if (!username || !password ||
       username === '' || password === '') {
       return resolve(false)
+    }
+
+    const userMocked =
+      mockedAuth(username, password)
+
+    if (userMocked) {
+
+      if (restriction == 0 ||
+        (restriction == 1 && userMocked.role == 'student') ||
+        (restriction == 2 && userMocked.role == 'teacher') ||
+        (restriction == 2 && userMocked.role == 'admin')) {
+
+        const code = uuid.v4()
+        await this.saveAuthorization(code, userMocked)
+        return resolve(code)
+      }
     }
 
     const client = createLDAPClient()
@@ -107,21 +123,6 @@ exports.auth = (restriction, username, password) => {
 
     // TODO: Use real LDAP data
     // TODO: Check restrictions
-    const userMocked =
-      mockedAuth(username, password)
-
-    if (userMocked) {
-
-      if (restriction === 0 ||
-        (restriction === 1 && userMocked.role === 'student') ||
-        (restriction === 2 && userMocked.role === 'teacher') ||
-        (restriction === 2 && userMocked.role === 'admin')) {
-
-        const code = uuid.v4()
-        await this.saveAuthorization(code, userMocked)
-        return resolve(code)
-      }
-    }
 
     client.bind(username + '@isim.intra', password, async (err) => {
       if (err) {
