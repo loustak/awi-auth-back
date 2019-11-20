@@ -95,6 +95,8 @@ exports.auth = (restriction, username, password) => {
       return resolve(false)
     }
 
+    username = username.toLowerCase()
+
     const userMocked =
       mockedAuth(username, password)
 
