@@ -42,6 +42,8 @@ if (inLocalDev()) {
   logger = devLogger
 } else if (inProduction() || inIntegration()) {
   logger = prodLogger
+} else {
+  logger = devLogger
 }
 
 logger.stream = {
