@@ -1,5 +1,5 @@
 const request = require('supertest')
-const app = require('../src/app')
+const app = require('../app')
 
 describe('Test the routes', () => {
   test('The homepage should be available', async () => {

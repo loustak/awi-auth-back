@@ -1,10 +1,8 @@
 const request = require('supertest')
-const app = require('../src/app')
-const actionAuth = require('../src/actionAuth')
-const token = require('../src/token')
+const app = require('../app')
+const actionAuth = require('../actionAuth')
 
-jest.mock('../src/actionAuth')
-jest.mock('../src/token')
+jest.mock('../actionAuth')
 
 const client = {
   client_id: 'o2-g1',
@@ -85,27 +83,8 @@ describe('Test route token', () => {
       code: 'dummy'
     }
 
-    const accessToken = {
-      issuer: 'mockIssuer',
-      audience: 'dummy',
-      expiresIn: '1h'
-    }
-
-    const refreshToken = {
-      issuer: 'mockIssuer',
-      audience: 'dummy',
-      expiresIn: '1h'
-    }
-
-    const tokenData = {
-      accessToken: accessToken,
-      refreshToken: refreshToken
-    }
-
     actionAuth.findClientRow = jest.fn().mockReturnValue(client)
     actionAuth.findAuthorizedRow = jest.fn().mockReturnValue('valueKey')
-
-    token.getTokens = jest.fn().mockReturnValue(tokenData)
 
     actionAuth.deleteAuthorization = jest.fn().mockReturnValue(data.code)
 

@@ -1,8 +1,8 @@
 const request = require('supertest')
-const app = require('../src/app')
-const actionAuth = require('../src/actionAuth')
+const app = require('../app')
+const actionAuth = require('../actionAuth')
 
-jest.mock('../src/actionAuth')
+jest.mock('../actionAuth')
 
 describe('Test route auth', () => {
   test('The auth get must be an error since it accepts only POST method', async () => {

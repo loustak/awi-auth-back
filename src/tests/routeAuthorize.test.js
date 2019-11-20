@@ -1,8 +1,8 @@
 const request = require('supertest')
-const app = require('../src/app')
-const actionAuth = require('../src/actionAuth')
+const app = require('../app')
+const actionAuth = require('../actionAuth')
 
-jest.mock('../src/actionAuth')
+jest.mock('../actionAuth')
 
 const client = {
   client_id: 'o2-g1',
