@@ -21,7 +21,7 @@ const users = [
     password: 'helene',
     email: 'helene@umontpellier.fr',
     firstname: 'Helene',
-    lastname: 'Torquelquechose',
+    lastname: 'Tortosa',
     role: 'admin',
     section: ''
   }, {

@@ -2,6 +2,7 @@ const URL = require('url').URL
 
 const auth = require('./actionAuth')
 
+const errcode = require('./errcode')
 const {
   getAccessToken,
   getTokens,
@@ -14,14 +15,6 @@ const {
  */
 
 /*
- * Errors codes.
- * If the list start to become large, move
- * this inside another file.
- */
-const INVALID_REQUEST = 'invalid_request'
-const UNAUTHORIZED_CLIENT = 'unauthorized_client'
-
-/*
  * Redirect the caller to the login page.
  * This is the start point of the auth process.
  */
@@ -32,7 +25,7 @@ exports.authorize = async (req, res) => {
 
   if (!clientId || !redirectUri || !state) {
     return res.status(400).json({
-      error: INVALID_REQUEST,
+      error: errcode.INVALID_REQUEST,
       message: 'client_id, redirect_uri or state' +
         ' was missing from the string query'
     })
@@ -43,7 +36,7 @@ exports.authorize = async (req, res) => {
 
   if (!client) {
     return res.status(401).json({
-      error: UNAUTHORIZED_CLIENT,
+      error: errcode.UNAUTHORIZED_CLIENT,
       message: 'Unknown client_id'
     })
   }
@@ -63,7 +56,7 @@ exports.authorize = async (req, res) => {
     hostname = new URL(decodedURI).hostname
   } catch (ex) {
     return res.status(400).json({
-      error: INVALID_REQUEST,
+      error: errcode.INVALID_REQUEST,
       message: 'invalid URI, don\'t forget to add' +
         ' the http or https in the redirect_uri'
     })
@@ -71,7 +64,7 @@ exports.authorize = async (req, res) => {
 
   if (!hostname || hostname === '') {
     return res.status(400).json({
-      error: INVALID_REQUEST,
+      error: errcode.INVALID_REQUEST,
       message: 'redirect_uri has an invalid uri format'
     })
   }
@@ -88,7 +81,7 @@ exports.authorize = async (req, res) => {
 
   if (!hostIsValid) {
     return res.status(400).json({
-      error: UNAUTHORIZED_CLIENT,
+      error: errcode.UNAUTHORIZED_CLIENT,
       message: 'The hostname of the redirect_uri is' +
         ' not an authorized hostname for this client'
     })
@@ -123,9 +116,10 @@ exports.auth = async (req, res) => {
   const username = req.body.username
   const password = req.body.password
 
-  if (!clientId || !username || !password) {
+  if (!clientId || !username || !password ||
+    username == '' || password == '') {
     return res.status(400).json({
-      error: INVALID_REQUEST,
+      error: errcode.INVALID_REQUEST,
       message: 'client_id, username or password' +
         ' was missing from the request body'
     })
@@ -136,28 +130,54 @@ exports.auth = async (req, res) => {
 
   if (!client) {
     return res.status(401).json({
-      error: UNAUTHORIZED_CLIENT,
+      error: errcode.UNAUTHORIZED_CLIENT,
       message: 'Unknown client_id'
     })
   }
 
   const restriction = client.client_restriction
 
-  const code =
+  const data =
       await auth.auth(restriction, username, password)
 
-  if (!code) {
-    // Failed to auth, error
-    return res.status(401).json({
-      error: UNAUTHORIZED_CLIENT,
-      message: 'User not found in LDAP'
-    })
+  if (!data.success) {
+    // There was an error
+    switch (data.errcode) {
+      case errcode.LDAP_ERROR:
+        return res.status(500).json({
+          error: data.errcode,
+          message: data.message
+        })
+        break
+      case errcode.LDAP_TIMEOUT:
+        return res.status(500).json({
+          error: data.errcode,
+          message: data.message
+        })
+        break
+      case errcode.LDAP_USER_NOT_FOUND:
+        return res.status(401).json({
+          error: data.errcode,
+          message: data.message
+        })
+        break
+      case errcode.AUTH_RESTRICTION:
+        return res.status(401).json({
+          error: data.errcode,
+          message: data.message
+        })
+        break
+      default:
+        return res.status(500).json({
+          error: data.errcode,
+          message: 'Unknown error'
+        })
+        break
+    }
   }
 
-  // TODO: Check access rights
-
   return res.status(200).json({
-    code: code
+    code: data.code
   })
 }
 
@@ -183,7 +203,7 @@ exports.token = async (req, res) => {
 
   if (!clientId || !authorizationCode) {
     return res.status(400).json({
-      error: INVALID_REQUEST,
+      error: errcode.INVALID_REQUEST,
       message: 'client_id or code' +
         ' was missing from the request body'
     })
@@ -194,7 +214,7 @@ exports.token = async (req, res) => {
 
   if (!client) {
     return res.status(401).json({
-      error: UNAUTHORIZED_CLIENT,
+      error: errcode.UNAUTHORIZED_CLIENT,
       message: 'Unknown client_id'
     })
   }
@@ -206,7 +226,7 @@ exports.token = async (req, res) => {
 
   if (!authorizedRow) {
     return res.status(401).json({
-      error: UNAUTHORIZED_CLIENT,
+      error: errcode.UNAUTHORIZED_CLIENT,
       message: 'Invalid code'
     })
   }
