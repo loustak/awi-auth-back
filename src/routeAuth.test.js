@@ -5,7 +5,7 @@ const actionAuth = require('../src/actionAuth')
 jest.mock('../src/actionAuth')
 
 describe('Test route auth', () => {
-  test('The auth get must be an error since it is just POST method', async () => {
+  test('The auth get must be an error since it accepts only POST method', async () => {
     const res = await request(app)
       .get('/auth')
     expect(res.statusCode)
