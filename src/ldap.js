@@ -10,7 +10,7 @@ exports.createLDAPClient = () => {
   return ldap.createClient({
     url: url,
     timeout: 5000,
-    connectTimeout: 5000,
+    connectTimeout: 5000
   })
 }
 

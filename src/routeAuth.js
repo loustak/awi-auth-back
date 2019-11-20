@@ -37,7 +37,7 @@ exports.authorize = async (req, res) => {
         ' was missing from the string query'
     })
   }
-  
+
   const client =
     await auth.findClientRow(clientId)
 
@@ -69,14 +69,21 @@ exports.authorize = async (req, res) => {
     })
   }
 
-  if (!hostname || hostname == '') {
+  if (!hostname || hostname === '') {
     return res.status(400).json({
       error: INVALID_REQUEST,
       message: 'redirect_uri has an invalid uri format'
     })
   }
 
+  // Check that the host is either local or
+  // an authorized hostname as defined in the
+  // database
   const hostIsValid =
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === '0.0.0.0' ||
+    hostname === '[::1]' ||
     authorizedHosts.includes(hostname)
 
   if (!hostIsValid) {
@@ -210,7 +217,7 @@ exports.token = async (req, res) => {
   }
 
   const { accessToken, refreshToken } =
-    await getTokens(clientId, clientSecret, authorizedRow)
+    await getTokens(clientId, clientSecret, data)
 
   await auth.deleteAuthorization(authorizationCode)
 
@@ -227,7 +234,7 @@ exports.refresh = async (req, res) => {
   const clientId = req.body.client_id
   const refreshToken = req.body.refresh_token
 
-  if (!clientId || !refreshToken ) {
+  if (!clientId || !refreshToken) {
     return res.status(400).json({
       error: INVALID_REQUEST,
       message: 'client_id  or refresh_token' +
@@ -246,7 +253,7 @@ exports.refresh = async (req, res) => {
   }
 
   const clientSecret = client.client_secret
-  
+
   let decoded = null
 
   try {
@@ -259,8 +266,16 @@ exports.refresh = async (req, res) => {
     })
   }
 
+  const data = {
+    firstname: decoded.firstname,
+    lastname: decoded.lastname,
+    email: decoded.email,
+    role: decoded.role,
+    section: decoded.section
+  }
+
   const newAccessToken =
-    await getAccessToken(clientId, clientSecret, decoded)
+    await getAccessToken(clientId, clientSecret, data)
 
   return res.status(200).json({
     access_token: newAccessToken,

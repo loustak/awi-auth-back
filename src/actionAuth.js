@@ -1,13 +1,10 @@
 const uuid = require('uuid')
-const {
-  getTokens,
-  verifyToken
-} = require('./token')
 
 const {
   ldap,
   createLDAPClient
 } = require('./ldap')
+const mockedAuth = require('./mockAuth')
 const db = require('./db')
 
 /*
@@ -43,7 +40,7 @@ exports.findAuthorizedRow = async (authorizationCode) => {
 
   const { rows } =
     await db.query(sql, [authorizationCode])
-  
+
   if (rows.length === 1) {
     return rows[0]
   }
@@ -55,31 +52,31 @@ exports.findAuthorizedRow = async (authorizationCode) => {
  * Save and authorization access
  * in the database
  */
-exports.saveAuthorization = async (code, data) => {
+exports.saveAuthorization = (code, data) => {
   const sql = `
     INSERT INTO authorization_code
-    VALUES ($1, $2, $3, $4, $5)
+    VALUES ($1, $2, $3, $4, $5, $6)
   `
 
   const args = [
-    code, data.firstname, data.lastname, data.section, data.role
+    code, data.firstname, data.lastname, data.section, data.role, data.email
   ]
 
-  return await db.query(sql, args)
+  return db.query(sql, args)
 }
 
 /*
  * Remove an authorization access
  * from the database
  */
-exports.deleteAuthorization = async (authorizationCode) => {
+exports.deleteAuthorization = (authorizationCode) => {
   const sql = `
     DELETE
     FROM authorization_code
     WHERE "code"=$1
   `
 
-  return await db.query(sql, [authorizationCode])
+  return db.query(sql, [authorizationCode])
 }
 
 /*
@@ -89,14 +86,32 @@ exports.deleteAuthorization = async (authorizationCode) => {
  *
  * restriction = 0 means everyone can connect.
  * restriction = 1 means only students can connect.
- * restriction = 2 means only teachers can connect.
+ * restriction = 2 means only teachers and admin can connect.
  */
-exports.auth = async (restriction, username, password) => {
-  return new Promise( (resolve, reject) => {
-    if (!username || !password || 
+exports.auth = (restriction, username, password) => {
+  return new Promise( async (resolve, reject) => {
+    if (!username || !password ||
       username === '' || password === '') {
-        return resolve(false)
+      return resolve(false)
+    }
+
+    username = username.toLowerCase()
+
+    const userMocked =
+      mockedAuth(username, password)
+
+    if (userMocked) {
+
+      if (restriction == 0 ||
+        (restriction == 1 && userMocked.role == 'student') ||
+        (restriction == 2 && userMocked.role == 'teacher') ||
+        (restriction == 2 && userMocked.role == 'admin')) {
+
+        const code = uuid.v4()
+        await this.saveAuthorization(code, userMocked)
+        return resolve(code)
       }
+    }
 
     const client = createLDAPClient()
 
@@ -108,6 +123,9 @@ exports.auth = async (restriction, username, password) => {
       return reject(err)
     })
 
+    // TODO: Use real LDAP data
+    // TODO: Check restrictions
+
     client.bind(username + '@isim.intra', password, async (err) => {
       if (err) {
         if (err instanceof ldap.InvalidCredentialsError) {
@@ -117,11 +135,13 @@ exports.auth = async (restriction, username, password) => {
         return reject(err)
       }
 
-      // TODO: Check restrictions
-
       const code = uuid.v4()
       const data = {
-        firstname: username
+        firstname: username.split('.')[0],
+        lastname: username.split('.')[1],
+        email: username + '@etu.umontpellier.fr',
+        role: 'student',
+        section: 'ig5'
       }
 
       await this.saveAuthorization(code, data)

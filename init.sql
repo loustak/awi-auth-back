@@ -22,7 +22,8 @@ create table if not exists authorization_code
     firstname varchar,
     lastname  varchar,
     section    varchar,
-    role       varchar
+    role       varchar,
+    email      varchar
 );
 
 create unique index if not exists authorization_code_code_uindex
