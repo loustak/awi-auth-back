@@ -55,11 +55,11 @@ exports.findAuthorizedRow = async (authorizationCode) => {
 exports.saveAuthorization = (code, data) => {
   const sql = `
     INSERT INTO authorization_code
-    VALUES ($1, $2, $3, $4, $5)
+    VALUES ($1, $2, $3, $4, $5, $6)
   `
 
   const args = [
-    code, data.firstname, data.lastname, data.section, data.role
+    code, data.firstname, data.lastname, data.section, data.role, data.email
   ]
 
   return db.query(sql, args)
