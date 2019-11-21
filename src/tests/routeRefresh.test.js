@@ -76,5 +76,4 @@ describe('Test route refresh', () => {
       .expect('Content-Type', /json/)
     expect(res.statusCode).toBe(400)
   })
-
 })
