@@ -16,7 +16,7 @@ Test coverage is defined as a metric that measures the amount of testing perform
 It will include gathering information about which parts of a program are executed when running the test suite to 
 determine which branches of conditional statements have been taken.
 
-To run the tests with coverage once use `npm run test`. To run the test after each changes use `npm test -- --coverage`.
+To run the tests with coverage once use `npm run test -- --coverage`.
 
 ---
 
