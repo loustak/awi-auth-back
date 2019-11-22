@@ -1,8 +1,15 @@
 const request = require('supertest')
 const app = require('../app')
 const actionAuth = require('../actionAuth')
+const errcode = require('../errcode')
 
 jest.mock('../actionAuth')
+
+const dataField = {
+  success: false,
+  code: 'code',
+  errcode: ''
+}
 
 describe('Test route auth', () => {
   test('The auth get must be an error since it accepts only POST method', async () => {
@@ -53,14 +60,95 @@ describe('Test route auth', () => {
     expect(res.statusCode).toBe(401)
   })
 
-  test('The auth post requisition must return error 401 when client does not have authCode', async () => {
+  test('The auth post requisition must return statusCode 500 when LDAP ERROR', async () => {
     const data = {
       client_id: 'unkown_userId',
       username: 'dummy',
       password: 'dummy'
     }
-    actionAuth.auth = jest.fn().mockReturnValue(null)
+
+    dataField.errcode = errcode.LDAP_ERROR
     actionAuth.findClientRow = jest.fn().mockReturnValue('mockClient')
+    actionAuth.auth = jest.fn().mockReturnValue(dataField)
+
+    const res = await request(app)
+      .post('/auth')
+      .send(data)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+    expect(res.statusCode).toBe(500)
+  })
+
+  test('The auth post requisition must return statusCode 500 when unknown error', async () => {
+    const data = {
+      client_id: 'unkown_userId',
+      username: 'dummy',
+      password: 'dummy'
+    }
+
+    dataField.errcode = 'unknown'
+    actionAuth.findClientRow = jest.fn().mockReturnValue('mockClient')
+    actionAuth.auth = jest.fn().mockReturnValue(dataField)
+
+    const res = await request(app)
+      .post('/auth')
+      .send(data)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+    expect(res.statusCode).toBe(500)
+  })
+
+  test('The auth post requisition must return statusCode 500 when LDAP_TIMEOUT', async () => {
+    const data = {
+      client_id: 'unkown_userId',
+      username: 'dummy',
+      password: 'dummy'
+    }
+
+    dataField.errcode = errcode.LDAP_TIMEOUT
+
+    actionAuth.findClientRow = jest.fn().mockReturnValue('mockClient')
+    actionAuth.auth = jest.fn().mockReturnValue(dataField)
+
+    const res = await request(app)
+      .post('/auth')
+      .send(data)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+    expect(res.statusCode).toBe(500)
+  })
+
+  test('The auth post requisition must return statusCode 401 when LDAP_USER_NOT_FOUND', async () => {
+    const data = {
+      client_id: 'unkown_userId',
+      username: 'dummy',
+      password: 'dummy'
+    }
+
+    dataField.errcode = errcode.LDAP_USER_NOT_FOUND
+
+    actionAuth.findClientRow = jest.fn().mockReturnValue('mockClient')
+    actionAuth.auth = jest.fn().mockReturnValue(dataField)
+
+    const res = await request(app)
+      .post('/auth')
+      .send(data)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+    expect(res.statusCode).toBe(401)
+  })
+
+  test('The auth post requisition must return statusCode 401 when AUTH_RESTRICTION', async () => {
+    const data = {
+      client_id: 'unkown_userId',
+      username: 'dummy',
+      password: 'dummy'
+    }
+
+    dataField.errcode = errcode.AUTH_RESTRICTION
+
+    actionAuth.findClientRow = jest.fn().mockReturnValue('mockClient')
+    actionAuth.auth = jest.fn().mockReturnValue(dataField)
 
     const res = await request(app)
       .post('/auth')
@@ -76,8 +164,11 @@ describe('Test route auth', () => {
       username: 'dummy',
       password: 'dummy'
     }
+
+    dataField.success = true
+
     actionAuth.findClientRow = jest.fn().mockReturnValue('mockClient')
-    actionAuth.auth = jest.fn().mockReturnValue('mockAuthCode')
+    actionAuth.auth = jest.fn().mockReturnValue(dataField)
 
     const res = await request(app)
       .post('/auth')
