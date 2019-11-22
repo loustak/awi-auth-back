@@ -95,31 +95,30 @@ exports.deleteAuthorization = (authorizationCode) => {
  * restriction = 2 means only teachers and admin can connect.
  */
 exports.auth = (restriction, username, password) => {
-  return new Promise( async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     username = username.toLowerCase()
 
     const userMocked =
       mockedAuth(username, password)
 
     if (userMocked) {
-
-      if ((restriction == 0) ||
-        (restriction == 1 && userMocked.role == 'student') ||
-        (restriction == 2 && userMocked.role == 'teacher') ||
-        (restriction == 2 && userMocked.role == 'admin')) {
-
+      if ((restriction === 0) ||
+        (restriction === 1 && userMocked.role === 'student') ||
+        (restriction === 2 && userMocked.role === 'teacher') ||
+        (restriction === 2 && userMocked.role === 'admin')) {
         const code = uuid.v4()
-        await this.saveAuthorization(code, userMocked)
-        return resolve({
-          success: true,
-          code: code
+        this.saveAuthorization(code, userMocked).then(() => {
+          return resolve({
+            success: true,
+            code: code
+          })
         })
       }
     }
 
     const client = createLDAPClient()
 
-    client.on('error', (err) => {
+    client.on('error', () => {
       return resolve({
         success: false,
         errcode: errcode.LDAP_ERROR,
@@ -127,7 +126,7 @@ exports.auth = (restriction, username, password) => {
       })
     })
 
-    client.on('connectTimeout', (err) => {
+    client.on('connectTimeout', () => {
       return resolve({
         success: false,
         errcode: errcode.LDAP_TIMEOUT,
@@ -155,11 +154,11 @@ exports.auth = (restriction, username, password) => {
         })
       }
 
-      if (restriction != 0 && restriction != 1) {
+      if (restriction !== 0 && restriction !== 1) {
         return resolve({
           success: false,
           errcode: errcode.AUTH_RESTRICTION,
-          message: 'This user is not allowed to log in this app' 
+          message: 'This user is not allowed to log in this app'
         })
       }
 

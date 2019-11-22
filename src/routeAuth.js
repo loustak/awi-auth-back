@@ -117,7 +117,7 @@ exports.auth = async (req, res) => {
   const password = req.body.password
 
   if (!clientId || !username || !password ||
-    username == '' || password == '') {
+    username === '' || password === '') {
     return res.status(400).json({
       error: errcode.INVALID_REQUEST,
       message: 'client_id, username or password' +
@@ -148,31 +148,26 @@ exports.auth = async (req, res) => {
           error: data.errcode,
           message: data.message
         })
-        break
       case errcode.LDAP_TIMEOUT:
         return res.status(500).json({
           error: data.errcode,
           message: data.message
         })
-        break
       case errcode.LDAP_USER_NOT_FOUND:
         return res.status(401).json({
           error: data.errcode,
           message: data.message
         })
-        break
       case errcode.AUTH_RESTRICTION:
         return res.status(401).json({
           error: data.errcode,
           message: data.message
         })
-        break
       default:
         return res.status(500).json({
           error: data.errcode,
           message: 'Unknown error'
         })
-        break
     }
   }
 
@@ -256,7 +251,7 @@ exports.refresh = async (req, res) => {
 
   if (!clientId || !refreshToken) {
     return res.status(400).json({
-      error: INVALID_REQUEST,
+      error: errcode.INVALID_REQUEST,
       message: 'client_id  or refresh_token' +
         ' was missing from the request body'
     })
@@ -267,7 +262,7 @@ exports.refresh = async (req, res) => {
 
   if (!client) {
     return res.status(401).json({
-      error: UNAUTHORIZED_CLIENT,
+      error: errcode.UNAUTHORIZED_CLIENT,
       message: 'Unknown client_id'
     })
   }
