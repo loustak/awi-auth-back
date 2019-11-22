@@ -94,27 +94,30 @@ exports.deleteAuthorization = (authorizationCode) => {
  * restriction = 1 means only students can connect.
  * restriction = 2 means only teachers and admin can connect.
  */
-exports.auth = (restriction, username, password) => {
-  return new Promise((resolve, reject) => {
-    username = username.toLowerCase()
+exports.auth = async (restriction, username, password) => {
+  username = username.toLowerCase()
 
-    const userMocked =
-      mockedAuth(username, password)
+  const userMocked =
+    mockedAuth(username, password)
 
-    if (userMocked) {
-      if ((restriction === 0) ||
-        (restriction === 1 && userMocked.role === 'student') ||
-        (restriction === 2 && userMocked.role === 'teacher') ||
-        (restriction === 2 && userMocked.role === 'admin')) {
-        const code = uuid.v4()
-        this.saveAuthorization(code, userMocked).then(() => {
-          return resolve({
-            success: true,
-            code: code
-          })
-        })
+  if (userMocked) {
+    if ((restriction === 0) ||
+      (restriction === 1 && userMocked.role === 'student') ||
+      (restriction === 2 && userMocked.role === 'teacher') ||
+      (restriction === 2 && userMocked.role === 'admin')) {
+
+      const code = uuid.v4()
+
+      await this.saveAuthorization(code, userMocked)
+
+      return {
+        success: true,
+        code: code
       }
     }
+  }
+
+  return new Promise((resolve, reject) => {
 
     const client = createLDAPClient()
 
