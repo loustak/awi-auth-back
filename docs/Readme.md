@@ -23,7 +23,7 @@ Arguments that you must pass like `/oauth2/authorize?client_id=...&redirect_rui=
 
 #### On error
 If the request is malformed the error will be displayed in the web page and a status code will be set accordingly. With the following format:
-```json
+```
 {
   error: ...,
   message: ...
@@ -51,7 +51,7 @@ Arguments to pass in the post form. Use `Content-Type: application/x-www-form-ur
 
 #### On error
 The error will be returned in the body of the request call with a json object such as:
-```json
+```
 {
   error: ...,
   message: ...
@@ -79,7 +79,7 @@ Arguments to pass in the post form. Use `Content-Type: application/x-www-form-ur
 
 #### On error
 The error will be returned in the body of the request call with a json object such as:
-```json
+```
 {
   error: ...,
   message: ...
