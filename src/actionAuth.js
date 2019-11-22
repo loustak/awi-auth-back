@@ -101,16 +101,16 @@ exports.auth = async (restriction, username, password) => {
     mockedAuth(username, password)
 
   if (userMocked) {
-    if ((restriction == 0) ||
-        (restriction == 1 && userMocked.role == 'student') ||
-        (restriction == 2 && userMocked.role == 'teacher') ||
-        (restriction == 2 && userMocked.role == 'admin')) {
+    if ((restriction === 0) ||
+        (restriction === 1 && userMocked.role === 'student') ||
+        (restriction === 2 && userMocked.role === 'teacher') ||
+        (restriction === 2 && userMocked.role === 'admin')) {
       const code = uuid.v4()
       await this.saveAuthorization(code, userMocked)
-      return resolve({
+      return {
         success: true,
         code: code
-      })
+      }
     }
   }
 
