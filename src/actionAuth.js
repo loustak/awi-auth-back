@@ -1,5 +1,6 @@
 const uuid = require('uuid')
 
+const errcode = require('./errcode')
 const {
   ldap,
   createLDAPClient
@@ -59,7 +60,12 @@ exports.saveAuthorization = (code, data) => {
   `
 
   const args = [
-    code, data.firstname, data.lastname, data.section, data.role, data.email
+    code,
+    data.firstname,
+    data.lastname,
+    data.section,
+    data.role,
+    data.email
   ]
 
   return db.query(sql, args)
@@ -89,36 +95,42 @@ exports.deleteAuthorization = (authorizationCode) => {
  * restriction = 2 means only teachers and admin can connect.
  */
 exports.auth = (restriction, username, password) => {
-  return new Promise(async (resolve, reject) => {
-    if (!username || !password ||
-      username === '' || password === '') {
-      return resolve(false)
-    }
-
+  return new Promise( async (resolve, reject) => {
     username = username.toLowerCase()
 
     const userMocked =
       mockedAuth(username, password)
 
     if (userMocked) {
-      if (restriction == 0 ||
+      if ((restriction == 0) ||
         (restriction == 1 && userMocked.role == 'student') ||
         (restriction == 2 && userMocked.role == 'teacher') ||
         (restriction == 2 && userMocked.role == 'admin')) {
         const code = uuid.v4()
         await this.saveAuthorization(code, userMocked)
-        return resolve(code)
+        return resolve({
+          success: true,
+          code: code
+        })
       }
     }
 
     const client = createLDAPClient()
 
     client.on('error', (err) => {
-      return reject(err)
+      return resolve({
+        success: false,
+        errcode: errcode.LDAP_ERROR,
+        message: 'An error happened while reaching the LDAP'
+      })
     })
 
     client.on('connectTimeout', (err) => {
-      return reject(err)
+      return resolve({
+        success: false,
+        errcode: errcode.LDAP_TIMEOUT,
+        message: 'The connection to the LDAP timed out'
+      })
     })
 
     // TODO: Use real LDAP data
@@ -127,10 +139,26 @@ exports.auth = (restriction, username, password) => {
     client.bind(username + '@isim.intra', password, async (err) => {
       if (err) {
         if (err instanceof ldap.InvalidCredentialsError) {
-          return resolve(false)
+          return resolve({
+            success: false,
+            errcode: errcode.LDAP_USER_NOT_FOUND,
+            message: 'User not found in the LDAP'
+          })
         }
 
-        return reject(err)
+        return resolve({
+          success: false,
+          errcode: errcode.LDAP_ERROR,
+          message: 'An error happened while reaching the LDAP'
+        })
+      }
+
+      if (restriction != 0 && restriction != 1) {
+        return resolve({
+          success: false,
+          errcode: errcode.AUTH_RESTRICTION,
+          message: 'This user is not allowed to log in this app' 
+        })
       }
 
       const code = uuid.v4()
@@ -144,7 +172,10 @@ exports.auth = (restriction, username, password) => {
 
       await this.saveAuthorization(code, data)
 
-      return resolve(code)
+      return resolve({
+        success: true,
+        code: code
+      })
     })
   })
 }
