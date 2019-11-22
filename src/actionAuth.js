@@ -94,12 +94,11 @@ exports.deleteAuthorization = (authorizationCode) => {
  * restriction = 1 means only students can connect.
  * restriction = 2 means only teachers and admin can connect.
  */
-exports.auth = (restriction, username, password) => {
-  return new Promise( async (resolve, reject) => {
-    username = username.toLowerCase()
+exports.auth = async (restriction, username, password) => {
+  username = username.toLowerCase()
 
-    const userMocked =
-      mockedAuth(username, password)
+  const userMocked =
+    mockedAuth(username, password)
 
     if (userMocked) {
       if ((restriction == 0) ||
@@ -114,10 +113,13 @@ exports.auth = (restriction, username, password) => {
         })
       }
     }
+  }
+
+  return new Promise((resolve, reject) => {
 
     const client = createLDAPClient()
 
-    client.on('error', (err) => {
+    client.on('error', () => {
       return resolve({
         success: false,
         errcode: errcode.LDAP_ERROR,
@@ -125,7 +127,7 @@ exports.auth = (restriction, username, password) => {
       })
     })
 
-    client.on('connectTimeout', (err) => {
+    client.on('connectTimeout', () => {
       return resolve({
         success: false,
         errcode: errcode.LDAP_TIMEOUT,
@@ -153,11 +155,11 @@ exports.auth = (restriction, username, password) => {
         })
       }
 
-      if (restriction != 0 && restriction != 1) {
+      if (restriction !== 0 && restriction !== 1) {
         return resolve({
           success: false,
           errcode: errcode.AUTH_RESTRICTION,
-          message: 'This user is not allowed to log in this app' 
+          message: 'This user is not allowed to log in this app'
         })
       }
 
