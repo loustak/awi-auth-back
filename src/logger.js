@@ -7,7 +7,8 @@ const {
 const {
   inProduction,
   inIntegration,
-  inLocalDev
+  inLocalDev,
+  inTest
 } = require('./util')
 
 const devLogger = createLogger({
@@ -37,11 +38,25 @@ const prodLogger = createLogger({
   ]
 })
 
+const testLogger = createLogger({
+  level: 'debug',
+  format: format.combine(
+    format.timestamp(),
+    format.printf(info => {
+      return `${info.timestamp} [${info.level}] ${info.message}`
+    })
+
+  ),
+  transports: []
+})
+
 let logger = null
 if (inLocalDev()) {
   logger = devLogger
 } else if (inProduction() || inIntegration()) {
   logger = prodLogger
+} else if (inTest()) {
+  logger = testLogger
 } else {
   logger = devLogger
 }

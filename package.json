@@ -8,7 +8,7 @@
     "start-watch": "nodemon src/index.js",
     "style": "standard",
     "style-fix": "standard --fix",
-    "test": "NODE_ENV=test jest",
+    "test": "NODE_ENV=test APP_ENV=test jest",
     "test-watch": "NODE_ENV=testjest --watch"
   },
   "repository": {
