@@ -5,5 +5,5 @@ module.exports = {
   LDAP_ERROR: 'ldap_error',
   LDAP_TIMEOUT: 'ldap_timeout',
   LDAP_USER_NOT_FOUND: 'ldap_user_not_found',
-  AUTH_RESTRICTION: 'auth_restriction',
+  AUTH_RESTRICTION: 'auth_restriction'
 }
